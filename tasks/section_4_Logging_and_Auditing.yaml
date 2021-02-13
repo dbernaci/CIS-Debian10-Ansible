@@ -1,0 +1,580 @@
+---
+# 4 Logging and Auditing
+# 4.1 Configure System Accounting (auditd)
+# 4.1.1 Ensure auditing is enabled
+# 4.1.1.1 Ensure auditd is installed
+# The capturing of system events provides system administrators with information to allow
+# them to determine if unauthorized access to their system is occurring.
+- name: 4.1.1.1 Ensure auditd is installed
+  apt:
+    name: ["auditd", "audispd-plugins"]
+    state: present
+    install_recommends: false
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.1.1
+    - scored
+# 4.1.1.2 Ensure auditd service is enabled
+# The capturing of system events provides system administrators with information to allow
+# them to determine if unauthorized access to their system is occurring.
+- name: 4.1.1.2 Ensure auditd service is enabled
+  service:
+    name: auditd
+    state: started
+    enabled: true
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.1.2
+    - scored
+# 4.1.1.3 Ensure auditing for processes that start prior to auditd is enabled
+# Audit events need to be captured on processes that start up prior to auditd , so that
+# potential malicious activity cannot go undetected.
+- name: 4.1.1.3 Ensure auditing for processes that start prior to auditd is enabled
+  replace:
+    dest: /etc/default/grub
+    regexp: '^(GRUB_CMDLINE_LINUX=(?!.*audit)\"[^\"]*)(\".*)'
+    replace: '\1 audit=1\2'
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.1.3
+    - scored
+# 4.1.1.4 Ensure audit_backlog_limit is sufficient
+# during boot if audit=1, then the backlog will hold 64 records. If more that 64 records are
+# created during boot, auditd records will be lost and potential malicious activity could go
+# undetected.
+- name: 4.1.1.4 Ensure audit_backlog_limit is sufficient
+  replace:
+    dest: /etc/default/grub
+    regexp: '^(GRUB_CMDLINE_LINUX=(?!.*audit_backlog_limit)\"[^\"]*)(\".*)'
+    replace: '\1 audit_backlog_limit={{ grub_backlog_limit }}\2'
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.1.4
+    - scored
+# 4.1.2 Configure Data Retention
+# 4.1.2.1 Ensure audit log storage size is configured
+# Configure the maximum size of the audit log file. Once the log reaches the maximum size, it
+# will be rotated and a new log file will be started.
+- name: 4.1.2.1 Ensure audit log storage size is configured
+  lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "^max_log_file( |=)"
+    line: "max_log_file = {{ max_log_file }}"
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.2.1
+    - scored
+# 4.1.2.2 Ensure audit logs are not automatically deleted
+# The max_log_file_action setting determines how to handle the audit log file reaching the
+# max file size. A value of keep_logs will rotate the logs but never delete old logs.
+- name: 4.1.2.2 Ensure audit logs are not automatically deleted
+  lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "^max_log_file_action"
+    line: "max_log_file_action = {{ max_log_file_action }}"
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.2.2
+    - scored
+# 4.1.2.3 Ensure system is disabled when audit logs are full
+# The auditd daemon can be configured to halt the system when the audit logs are full.
+# In high security contexts, the risk of detecting unauthorized access or nonrepudiation
+# exceeds the benefit of the system's availability.
+- name: 4.1.2.3 Ensure system is disabled when audit logs are full
+  block:
+    - name: 4.1.2.3 Ensure system is disabled when audit logs are full - admin_space_left_action
+      lineinfile:
+        dest: /etc/audit/auditd.conf
+        regexp: "^admin_space_left_action"
+        line: "admin_space_left_action = {{ admin_space_left_action }}"
+    - name: 4.1.2.3 Ensure system is disabled when audit logs are full - space_left_action
+      lineinfile:
+        dest: /etc/audit/auditd.conf
+        regexp: "^space_left_action"
+        line: "space_left_action = {{ space_left_action }}"
+    - name: 4.1.2.3 Ensure system is disabled when audit logs are full - action_mail_acct
+      lineinfile:
+        dest: /etc/audit/auditd.conf
+        regexp: "^action_mail_acct"
+        line: "action_mail_acct = {{ action_mail_acct }}"
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.2.3
+    - scored
+# 4.1.3 Ensure events that modify date and time information are collected
+# Unexpected changes in system date and/or time could be a sign of malicious activity on the system.
+- name: 4.1.3 Ensure events that modify date and time information are collected
+  template:
+    src: auditd/time-change.rules.j2
+    dest: /etc/audit/rules.d/time-change.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.3
+    - scored
+# 4.1.4 Ensure events that modify user/group information are collected
+# # Unexpected changes to these files could be an indication that the system has been compromised and that an unauthorized user is attempting to hide their activities or compromise additional accounts.
+- name: 4.1.4 Ensure events that modify user/group information are collected
+  template:
+    src: auditd/identity.rules.j2
+    dest: /etc/audit/rules.d/identity.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.4
+    - scored
+# 4.1.5 Ensure events that modify the system's network environment are collected
+# Monitoring sethostname and setdomainname will identify potential unauthorized changes to host and domainname of a system. The changing of these names could potentially break
+# security parameters that are set based on those names. The /etc/hosts file is monitored for changes in the file that can indicate an unauthorized intruder is trying to change
+# machine associations with IP addresses and trick users and processes into connecting to unintended machines. Monitoring /etc/issue and /etc/issue.net is important, as
+# intruders could put disinformation into those files and trick users into providing information to the intruder. Monitoring /etc/network is important as it can show if
+# network interfaces or scripts are being modified in a way that can lead to the machine becoming unavailable or compromised. All audit records will be tagged with the identifier "system-locale."
+- name: 4.1.5 Ensure events that modify the system's network environment are collected
+  template:
+    src: auditd/system-locale.rules.j2
+    dest: /etc/audit/rules.d/system-locale.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.5
+    - scored
+# 4.1.6 Ensure events that modify the system's Mandatory Access Controls are collected
+# # Changes to files in these directories could indicate that an unauthorized user is attempting to modify access controls and change security contexts, leading to a compromise of the system.
+- name: 4.1.6 Ensure events that modify the system's Mandatory Access Controls are collected
+  template:
+    src: auditd/MAC-policy.rules.j2
+    dest: /etc/audit/rules.d/MAC-policy.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.6
+    - scored
+# 4.1.7 Ensure login and logout events are collected
+# Monitoring login/logout events could provide a system administrator with information associated with brute force attacks against user logins.
+- name: 4.1.7 Ensure login and logout events are collected
+  template:
+    src: auditd/logins.rules.j2
+    dest: /etc/audit/rules.d/logins.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.7
+    - scored
+# 4.1.8 Ensure session initiation information is collected
+# # Monitoring these files for changes could alert a system administrator to logins occurring at unusual hours, which could indicate intruder activity (i.e. a user logging in at a time when they do not normally log in).
+- name: 4.1.8 Ensure session initiation information is collected
+  template:
+    src: auditd/session.rules.j2
+    dest: /etc/audit/rules.d/session.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.8
+    - scored
+# 4.1.9 Ensure discretionary access control permission modification events are collected
+# Monitoring for changes in file attributes could alert a system administrator to activity that could indicate intruder activity or policy violation.
+- name: 4.1.9 Ensure discretionary access control permission modification events are collected
+  template:
+    src: auditd/perm_mod.rules.j2
+    dest: /etc/audit/rules.d/perm_mod.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.9
+    - scored
+# 4.1.10 Ensure unsuccessful unauthorized file access attempts are collected
+# Failed attempts to open, create or truncate files could be an indication that an individual or
+# process is trying to gain unauthorized access to the system.
+- name: 4.1.10 Ensure unsuccessful unauthorized file access attempts are collected
+  template:
+    src: auditd/audit.rules.j2
+    dest: /etc/audit/rules.d/audit.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.10
+    - scored
+# 4.1.11 Ensure use of privileged commands is collected
+# Execution of privileged commands by non-privileged users could be an indication of
+# someone trying to gain unauthorized access to the system.
+- name: 4.1.11 Ensure use of privileged commands is collected
+  block:
+    - name: 4.1.11 Ensure use of privileged commands is collected - get data
+      shell: find / -xdev \( -perm -4000 -o -perm -2000 \) -type f | awk '{print "-a always,exit -F path=" $1 " -F perm=x -F auid>='"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"' -F auid!=4294967295 -k privileged" }'
+      register: output_4_1_11
+      changed_when: output_4_1_11.rc != 0
+    - name: 4.1.11 Ensure use of privileged commands is collected - apply
+      template:
+        src: auditd/privileged.rules.j2
+        dest: /etc/audit/rules.d/privileged.rules
+        owner: root
+        group: root
+        mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.11
+    - scored
+# 4.1.12 Ensure successful file system mounts are collected
+# It is highly unusual for a non privileged user to mount file systems to the system. While tracking mount commands gives the system administrator evidence that external media
+# may have been mounted (based on a review of the source of the mount and confirming it's an external media type), it does not conclusively indicate that data was exported to the
+# media. System administrators who wish to determine if data were exported, would also have to track successful open , creat and truncate system calls requiring write access to a
+# file under the mount point of the external media file system. This could give a fair indication that a write occurred. The only way to truly prove it, would be to track
+# successful writes to the external media. Tracking write system calls could quickly fill up the audit log and is not recommended. Recommendations on configuration options to track data export to media is beyond the scope of this document.
+- name: 4.1.12 Ensure successful file system mounts are collected
+  template:
+    src: auditd/system_mounts.rules.j2
+    dest: /etc/audit/rules.d/system_mounts.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.12
+    - scored
+# 4.1.13 Ensure file deletion events by users are collected
+# Monitoring these calls from non-privileged users could provide a system administrator with evidence that inappropriate removal of files and file attributes associated with
+# protected files is occurring. While this audit option will look at all events, system administrators will want to look for specific privileged files that are being deleted or altered.
+- name: 4.1.13 Ensure file deletion events by users are collected
+  template:
+    src: auditd/delete.rules.j2
+    dest: /etc/audit/rules.d/delete.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.13
+    - scored
+# 4.1.14 Ensure changes to system administration scope (sudoers) is collected
+# Changes in the /etc/sudoers file can indicate that an unauthorized change has been made to scope of system administrator activity.
+- name: 4.1.14 Ensure changes to system administration scope (sudoers) is collected
+  template:
+    src: auditd/scope.rules.j2
+    dest: /etc/audit/rules.d/scope.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.14
+    - scored
+# 4.1.15 Ensure system administrator actions (sudolog) are collected
+# Changes in /var/log/sudo.log indicate that an administrator has executed a command or
+# the log file itself has been tampered with. Administrators will want to correlate the events
+# written to the audit trail with the records written to /var/log/sudo.log to verify if
+# unauthorized commands have been executed.
+- name: 4.1.15 Ensure system administrator actions (sudolog) are collected
+  template:
+    src: auditd/actions.rules.j2
+    dest: /etc/audit/rules.d/actions.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.15
+    - scored
+# 4.1.16 Ensure kernel module loading and unloading is collected
+# Monitoring the use of insmod , rmmod and modprobe could provide system administrators
+# with evidence that an unauthorized user loaded or unloaded a kernel module, possibly
+# compromising the security of the system. Monitoring of the init_module and
+# delete_module system calls would reflect an unauthorized user attempting to use a
+# different program to load and unload modules.
+- name: 4.1.16 Ensure kernel module loading and unloading is collected
+  template:
+    src: auditd/modules.rules.j2
+    dest: /etc/audit/rules.d/modules.rules
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.16
+    - scored
+# 4.1.17 Ensure the audit configuration is immutable
+# In immutable mode, unauthorized users cannot execute changes to the audit system to
+# potentially hide malicious activity and then put the audit rules back. Users would most
+# likely notice a system reboot and that could alert administrators of an attempt to make
+# unauthorized audit changes.
+- name: 4.1.17 Ensure the audit configuration is immutable
+  block:
+    - name: 4.1.17 Ensure the audit configuration is immutable - finalize
+      template:
+        src: auditd/99-finalize.rules.j2
+        dest: /etc/audit/rules.d/99-finalize.rules
+        owner: root
+        group: root
+        mode: 0600
+    - name: 4.1.17 Ensure the audit configuration is immutable - init
+      template:
+        src: auditd/11-init.rules.j2
+        dest: /etc/audit/rules.d/11-init.rules
+        owner: root
+        group: root
+        mode: 0600
+      notify:
+        - audit rules load
+        - auditd restart
+  ignore_errors: yes
+  tags:
+    - section4
+    - level_2_server
+    - level_2_workstation
+    - 4.1.17
+    - scored
+# 4.2 Configure Logging
+# 4.2.1 Configure rsyslog
+# 4.2.1.1 Ensure rsyslog is installed
+# The security enhancements of rsyslog such as connection-oriented (i.e. TCP) transmission
+# of logs, the option to log to database formats, and the encryption of log data en route to a
+# central logging server) justify installing and configuring the package.
+- name: 4.2.1.1 Ensure rsyslog is installed
+  apt:
+    name: rsyslog
+    state: present
+    install_recommends: false
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.1.1
+    - scored
+# 4.2.1.2 Ensure rsyslog Service is enabled
+# If the rsyslog service is not activated the system may default to the syslogd service or lack
+# logging instead.
+- name: 4.2.1.2 Ensure rsyslog Service is enabled
+  service:
+    name: rsyslog
+    enabled: yes
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.1.2
+    - scored
+# 4.2.1.3 Ensure logging is configured
+# The /etc/rsyslog.conf and /etc/rsyslog.d/*.conf files specifies rules for logging and
+# which files are to be used to log certain classes of messages.
+# A great deal of important security-related information is sent via rsyslog (e.g., successful
+# and failed su attempts, failed login attempts, root login attempts, etc.).
+- name: 4.2.1.3 Ensure logging is configured
+  template:
+    src: rsyslog.conf.j2
+    dest: /etc/rsyslog.conf
+    backup: yes
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.1.3
+    - not-scored
+# 4.2.1.4 Ensure rsyslog default file permissions configured
+# It is important to ensure that log files have the correct permissions to ensure that sensitive
+# data is archived and protected.
+- name: 4.2.1.4 Ensure rsyslog default file permissions configured
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    regexp: '^\$FileCreateMode (0640)?'
+    line: "$FileCreateMode 0640"
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.1.4
+    - scored
+# 4.2.1.5 Ensure rsyslog is configured to send logs to a remote log host
+# # Storing log data on a remote host protects log integrity from local attacks. If an attacker
+# gains root access on the local system, they could tamper with or remove log data that is
+# stored on the local system
+- name: 4.2.1.5 Ensure rsyslog is configured to send logs to a remote log host
+  lineinfile:
+    path: /etc/rsyslog.conf
+    line: '*.* action(type="omfwd" target="{{ remoteSyslog.host }}" port="{{ remoteSyslog.port }}" protocol="{{ remoteSyslog.protocol }}" action.resumeRetryCount="100" queue.type="LinkedList" queue.size="1000")'
+  when: remoteSyslog.enable == True
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.1.5
+    - scored
+# 4.2.1.6 Ensure remote rsyslog messages are only accepted on designated log hosts
+# The guidance in the section ensures that remote log hosts are configured to only accept
+# rsyslog data from hosts within the specified domain and that those systems that are not
+# designed to be log hosts do not accept any remote rsyslog messages. This provides
+# protection from spoofed log data and ensures that system administrators are reviewing
+# reasonably complete syslog data in a central location.
+- name: 4.2.1.6 Ensure remote rsyslog messages are only accepted on designated log hosts
+  block:
+    - name: 4.2.1.6 Ensure remote rsyslog messages are only accepted on designated log hosts - load imtcp
+      lineinfile:
+        dest: /etc/rsyslog.conf
+        regexp: '^#module(load="imtcp")'
+        line: '#module(load="imtcp")'
+    - name: 4.2.1.6 Ensure remote rsyslog messages are only accepted on designated log hosts - port 514
+      lineinfile:
+        dest: /etc/rsyslog.conf
+        regexp: '^#input(type="imtcp" port="514")'
+        line: '#input(type="imtcp" port="514")'
+      notify:
+        - rsyslog restart
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.1.6
+    - not-scored
+# 4.2.2 Configure journald
+# 4.2.2.1 Ensure journald is configured to send logs to rsyslog
+# Storing log data on a remote host protects log integrity from local attacks. If an attacker
+# gains root access on the local system, they could tamper with or remove log data that is
+# stored on the local system.
+- name: 4.2.2.1 Ensure journald is configured to send logs to rsyslog
+  lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: "(#)?ForwardToSyslog=(yes|no)"
+    line: ForwardToSyslog=yes
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.2.1
+    - scored
+# 4.2.2.2 Ensure journald is configured to compress large log files
+# The journald system includes the capability of compressing overly large files to avoid filling
+# up the system with logs or making the logs unmanageably large.
+- name: 4.2.2.2 Ensure journald is configured to compress large log files
+  lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: "(#)?Compress=(yes|no)"
+    line: Compress=yes
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.2.2
+    - scored
+# 4.2.2.3 Ensure journald is configured to write logfiles to persistent disk
+# Writing log data to disk will provide the ability to forensically reconstruct events which
+# may have impacted the operations or security of a system even after a system crash or reboot.
+- name: 4.2.2.3 Ensure journald is configured to write logfiles to persistent disk
+  lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: "(#)?Storage=(auto|persistent)"
+    line: Storage=persistent
+  notify:
+    - journald restart
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.2.3
+    - scored
+# 4.2.3 Ensure permissions on all logfiles are configured
+# It is important to ensure that log files have the correct permissions to ensure that sensitive data is archived and protected.
+- name: 4.2.3 Ensure permissions on all logfiles are configured
+  shell: |
+    find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +
+  register: output_4_2_3
+  changed_when: output_4_2_3.stdout_lines | length > 0
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - 4.2.3
+    - scored
+# 4.3 Ensure logrotate is configured
+# The system includes the capability of rotating log files regularly to avoid filling up the
+# system with logs or making the logs unmanageably large. The file
+# /etc/logrotate.d/rsyslog is the configuration file used to rotate log files created
+# by rsyslog.
+# By keeping the log files smaller and more manageable, a system administrator can easily
+# archive these files to another system and spend less time looking through inordinately
+# large log files.
+- name: 4.3 Ensure logrotate is configured
+  replace:
+    path: /etc/logrotate.d/rsyslog
+    regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
+    replace: "\\1{{ logrotate_policy }}"
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - "4.3"
+    - not-scored
+# 4.4 Ensure logrotate assigns appropriate permissions
+# It is important to ensure that log files have the correct permissions to ensure that sensitive
+# data is archived and protected.
+- name: 4.4 Ensure logrotate assigns appropriate permissions
+  lineinfile:
+    dest: /etc/logrotate.conf
+    regexp: "^create"
+    line: "create 0640 root utmp"
+  notify:
+    - journald restart
+  tags:
+    - section4
+    - level_1_server
+    - level_1_workstation
+    - "4.4"
+    - scored

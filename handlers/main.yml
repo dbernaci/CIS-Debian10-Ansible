@@ -1,0 +1,28 @@
+---
+# handlers file for Auto-CIS-Ubuntu-Linux-20.04-LTS-Remediation
+#sshd
+#Grub
+- name: grub restart
+  command: update-grub
+- name: ipv4 flush route
+  command: sysctl -w net.ipv4.route.flush=1
+- name: ipv6 flush route
+  command: sysctl -w net.ipv6.route.flush=1
+- name: journald restart
+  service:
+    name: systemd-journald
+    state: restarted
+- name: auditd restart
+  service:
+    name: auditd
+    state: restarted
+- name: audit rules load
+  shell: /sbin/augenrules --load && true || true
+- name: sshd restart
+  service:
+    name: sshd
+    state: restarted
+- name: rsyslog restart
+  service:
+    name: rsyslog
+    state: restarted

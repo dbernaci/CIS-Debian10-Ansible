@@ -1,0 +1,26 @@
+galaxy_info:
+  author: Ali Saleh Baker
+  description: DevOps
+  company: Alivx
+  license: Apache-2.0
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: ubuntu
+      versions:
+        - focal
+        - bionic
+
+  galaxy_tags:
+    [
+      ansible,
+      cis,
+      ubuntu,
+      hardening,
+      security,
+      system,
+      cloud,
+      cisecurity,
+      automation,
+    ]
+dependencies: []

@@ -1,0 +1,712 @@
+---
+# 6 System Maintenanc
+# 6.1 System File Permission
+# 6.1.1 Audit system file permissions
+# It is important to confirm that packaged system files and directories are maintained with
+# the permissions they were intended to have from the OS vendor.
+- name: 6.1.1 Audit system file permissions
+  block:
+    - name: 6.1.1 Audit system file permissions
+      script: 6_1_1.sh
+      register: output_6_1_1
+    - name: 6.1.1 Audit system file permissions - print output
+      debug:
+        msg: "{{ output_6_1_1.stdout_lines }}"
+  tags:
+    - section6
+    - level_2_server
+    - level_2_workstation
+    - 6.1.1
+    - manual_setup
+    - not-scored
+# 6.1.2 Ensure permissions on /etc/passwd are configured
+# The /etc/passwd file contains user account information that is used by many system
+# utilities and therefore must be readable for these utilities to operate.
+- name: 6.1.2 Ensure permissions on /etc/passwd are configured
+  file:
+    dest: /etc/passwd
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.2
+    - scored
+# 6.1.3 Ensure permissions on /etc/gshadow- are configured
+# It is critical to ensure that the /etc/gshadow- file is protected from unauthorized access.
+# Although it is protected by default, the file permissions could be changed either
+# inadvertently or through malicious actions.
+- name: 6.1.3 Ensure permissions on /etc/gshadow- are configured
+  file:
+    dest: /etc/gshadow-
+    owner: root
+    group: shadow
+    mode: 0640
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.3
+    - scored
+# 6.1.4 Ensure permissions on /etc/shadow are configured
+# If attackers can gain read access to the /etc/shadow file, they can easily run a password
+# cracking program against the hashed password to break it. Other security information that
+# is stored in the /etc/shadow file (such as expiration) could also be useful to subvert the
+# user accounts.
+- name: 6.1.4 Ensure permissions on /etc/shadow are configured
+  file:
+    dest: /etc/shadow
+    owner: root
+    group: shadow
+    mode: 0640
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.4
+    - scored
+# 6.1.5 Ensure permissions on /etc/group are configured
+# The /etc/group file needs to be protected from unauthorized changes by non-privileged
+# users, but needs to be readable as this information is used with many non-privileged
+# programs.
+- name: 6.1.5 Ensure permissions on /etc/group are configured
+  file:
+    dest: /etc/group
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.5
+    - scored
+# 6.1.6 Ensure permissions on /etc/passwd- are configured
+# It is critical to ensure that the /etc/passwd- file is protected from unauthorized access.
+# Although it is protected by default, the file permissions could be changed either
+# inadvertently or through malicious actions.
+- name: 6.1.6 Ensure permissions on /etc/passwd- are configured
+  file:
+    dest: /etc/passwd-
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.6
+    - scored
+# 6.1.7 Ensure permissions on /etc/shadow- are configured
+# It is critical to ensure that the /etc/shadow- file is protected from unauthorized access.
+# Although it is protected by default, the file permissions could be changed either
+# inadvertently or through malicious actions.
+- name: 6.1.7 Ensure permissions on /etc/shadow- are configured
+  file:
+    dest: /etc/shadow-
+    owner: root
+    group: shadow
+    mode: 0600
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.7
+    - scored
+# 6.1.8 Ensure permissions on /etc/group- are configured
+# It is critical to ensure that the /etc/group- file is protected from unauthorized access.
+# Although it is protected by default, the file permissions could be changed either
+# inadvertently or through malicious actions.
+# Note: CIS for debian 10 set this to 0600 while in "Debian family" this is set to 0644
+- name: 6.1.8 Ensure permissions on /etc/group- are configured
+  file:
+    dest: /etc/group-
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.8
+    - scored
+# 6.1.9 Ensure permissions on /etc/gshadow are configured
+# If attackers can gain read access to the /etc/gshadow file, they can easily run a password
+# cracking program against the hashed password to break it. Other security information that
+# is stored in the /etc/gshadow file (such as group administrators) could also be useful to
+# subvert the group.
+- name: 6.1.9 Ensure permissions on /etc/gshadow are configured
+  file:
+    dest: /etc/gshadow
+    owner: root
+    group: shadow
+    mode: 0640
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.9
+    - scored
+# 6.1.10 Ensure no world writable files exist
+# Data in world-writable files can be modified and compromised by any user on the system.
+# World writable files may also indicate an incorrectly written script or program that could
+# potentially be the cause of a larger compromise to the system's integrity.
+- name: 6.1.10 Ensure no world writable files exist
+  block:
+    - name: 6.1.10 Ensure no world writable files exist - find files
+      shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -0002 2> /dev/null && true || true
+      changed_when: output_6_1_10.stdout | trim | length > 0
+      register: output_6_1_10
+    - name: 6.1.10 Ensure no world writable files exist - print output
+      debug:
+        msg: "{{ output_6_1_10.stdout_lines }}"
+    - name: 6.1.10 Ensure no world writable files exist - fix permission
+      file:
+        path: "{{ item }}"
+        mode: "o-w"
+      with_items: "{{ output_6_1_10.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.10
+    - warn
+    - scored
+# 6.1.11 Ensure no unowned files or directories exist
+# A new user who is assigned the deleted user's user ID or group ID may then end up
+# "owning" these files, and thus have more access on the system than was intended.
+- name: 6.1.11 Ensure no unowned files or directories exist
+  block:
+    - name: 6.1.11 Ensure no unowned files or directories exist - find
+      shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser 2> /dev/null && true || true
+      changed_when: output_6_1_11.stdout | trim | length > 0
+      register: output_6_1_11
+    - name: 6.1.11 Ensure no unowned files or directories exist - print output
+      debug:
+        msg: "{{ output_6_1_11.stdout_lines }}"
+    - name: 6.1.11 Ensure no unowned files or directories exist - fix
+      file:
+        path: "{{ item }}"
+        owner: "{{ withoutOwnerFileDirOwner }}"
+        group: "{{ withoutGroupFilesDirGroup }}"
+      with_items: "{{ output_6_1_11.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.11
+    - scored
+# 6.1.12 Ensure no ungrouped files or directories exist
+# A new user who is assigned the deleted user's user ID or group ID may then end up
+# "owning" these files, and thus have more access on the system than was intended.
+- name: 6.1.12 Ensure no ungrouped files or directories exist
+  block:
+    - name: 6.1.12 Ensure no ungrouped files or directories exist - find
+      shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -nogroup 2> /dev/null && true || true
+      changed_when: output_6_1_12.stdout | trim | length > 0
+      register: output_6_1_12
+    - name: 6.1.12 Ensure no ungrouped files or directories exist - print output
+      debug:
+        msg: "{{ output_6_1_12.stdout_lines }}"
+    - name: 6.1.12 Ensure no ungrouped files or directories exist - fix
+      file:
+        path: "{{ item }}"
+        owner: "{{ withoutOwnerFileDirOwner }}"
+        group: "{{ withoutGroupFilesDirGroup }}"
+      with_items: "{{ output_6_1_12.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.12
+    - scored
+# 6.1.13 Audit SUID executables
+# There are valid reasons for SUID programs, but it is important to identify and review such
+# programs to ensure they are legitimate.
+- name: 6.1.13 Audit SUID executables
+  block:
+    - name: 6.1.13 Audit SUID executables - find
+      shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -4000 2> /dev/null && true || true
+      changed_when: output_6_1_13.stdout | trim | length > 0
+      register: output_6_1_13
+    - name: 6.1.13 Audit SUID executables - print output
+      debug:
+        msg: "{{ output_6_1_13.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.13
+    - manual_setup
+    - not-scored
+# 6.1.14 Audit SGID executables
+# There are valid reasons for SGID programs, but it is important to identify and review such
+# programs to ensure they are legitimate. Review the files returned by the action in the audit
+# section and check to see if system binaries have a different md5 checksum than what from
+# the package. This is an indication that the binary may have been replaced.
+- name: 6.1.14 Audit SGID executables
+  block:
+    - name: 6.1.14 Audit SGID executables - find
+      shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -2000 2> /dev/null && true || true
+      changed_when: output_6_1_14.stdout | trim | length > 0
+      register: output_6_1_14
+    - name: 6.1.14 Audit SGID executables - print output
+      debug:
+        msg: "{{ output_6_1_14.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.1.14
+    - manual_setup
+    - not-scored
+# 6.2 User and Group Settings
+# 6.2.1 Ensure password fields are not empty
+# All accounts must have passwords or be locked to prevent the account from being used by
+# an unauthorized user.
+- name: 6.2.1 Ensure password fields are not empty
+  block:
+    - name: 6.2.1  Ensure password fields are not empty - list
+      shell: |
+        awk -F: '($2 == "" ) { print $1 }' /etc/shadow
+      changed_when: output_6_2_1.stdout | trim | length > 0
+      register: output_6_2_1
+    - name: 6.2.1 Ensure password fields are not empty - print output
+      debug:
+        msg: "{{ output_6_2_1.stdout_lines }}"
+    - name: 6.2.1 Ensure password fields are not empty - lock account
+      user:
+        name: "{{ item }}"
+        password_lock: yes
+      with_items: "{{ output_6_2_1.stdout_lines }}"
+      when:
+        - "{{ output_6_2_1.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.1
+    - scored
+# 6.2.2 Ensure no legacy "+" entries exist in /etc/passwd
+# These entries may provide an avenue for attackers to gain privileged access on the system.
+- name: 6.2.2 Ensure no legacy "+" entries exist in /etc/passwd
+  block:
+    - name: 6.2.2 Ensure no legacy "+" entries exist in /etc/passwd - list
+      shell: |
+        grep '^\+:' /etc/passwd && true || true
+      changed_when: output_6_2_2.stdout | trim | length > 0
+      register: output_6_2_2
+    - name: 6.2.2 Ensure no legacy "+" entries exist in /etc/passwd - print output
+      debug:
+        msg: "{{ output_6_2_2.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.2
+    - manual_setup
+    - scored
+# 6.2.3 Ensure all users' home directories exist
+# If the user's home directory does not exist or is unassigned, the user will be placed in "/"
+# and will not be able to write any files or have local environment variables set.
+- name: 6.2.3 Ensure all users' home directories exist
+  block:
+    - name: 6.2.3 Ensure all users' home directories exist - list
+      shell: |
+        grep -E -v '^(halt|sync|shutdown)' /etc/passwd | awk -F: '($7 != "'"$(which nologin)"'" && $7 != "/bin/false") { print $1 " " $6 }' | while read -r user dir
+        do
+            if [ ! -d "$dir" ]; then
+                echo "${user}"
+            fi
+        done
+      changed_when: output_6_2_3.stdout | trim | length > 0
+      register: output_6_2_3
+    - name: 6.2.3 Ensure all users' home directories exist - print output
+      debug:
+        msg: "{{ output_6_2_3.stdout_lines }}"
+    - name: 6.2.3 Ensure all users' home directories exist - fix
+      user:
+        name: "{{ item }}"
+        create_home: yes
+      with_items: "{{ output_6_2_3.stdout_lines }}"
+      when: "{{ output_6_2_3.stdout_lines | length > 0 }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.3
+    - scored
+# 6.2.4 Ensure no legacy "+" entries exist in /etc/shadow
+# These entries may provide an avenue for attackers to gain privileged access on the system.
+- name: 6.2.4 Ensure no legacy "+" entries exist in /etc/shadow
+  block:
+    - name: 6.2.4 Ensure no legacy "+" entries exist in /etc/shadow - list
+      shell: |
+        grep '^\+:' /etc/shadow && true || true
+      changed_when: output_6_2_4.stdout | trim | length > 0
+      register: output_6_2_4
+    - name: 6.2.4 Ensure no legacy "+" entries exist in /etc/shadow - print output
+      debug:
+        msg: "{{ output_6_2_4.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.4
+    - manual_setup
+    - scored
+# 6.2.5 Ensure no legacy "+" entries exist in /etc/group
+# These entries may provide an avenue for attackers to gain privileged access on the system.
+- name: 6.2.5 Ensure no legacy "+" entries exist in /etc/group
+  block:
+    - name: 6.2.5 Ensure no legacy "+" entries exist in /etc/group - list
+      shell: |
+        grep '^\+:' /etc/group && true || true
+      changed_when: output_6_2_5.stdout | trim | length > 0
+      register: output_6_2_5
+    - name: 6.2.4 Ensure no legacy "+" entries exist in /etc/group - print output
+      debug:
+        msg: "{{ output_6_2_5.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.5
+    - manual_setup
+    - scored
+# 6.2.6 Ensure root is the only UID 0 account
+# This access must be limited to only the default root account and only from the system
+# console. Administrative access must be through an unprivileged account using an approved
+# mechanism as noted in Item 5.6 Ensure access to the su command is restricted.
+- name: 6.2.6 Ensure root is the only UID 0 account
+  block:
+    - name: 6.2.6 Ensure root is the only UID 0 account - list
+      shell: |
+        awk -F: '($3 == 0) { print $1 }' /etc/passwd | grep -v root && true || true
+      changed_when: output_6_2_6.stdout | trim | length > 0
+      register: output_6_2_6
+    - name: 6.2.6 Ensure root is the only UID 0 account - print output
+      debug:
+        msg: "{{ output_6_2_6.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.6
+    - manual_setup
+    - scored
+# 6.2.7 Ensure root PATH Integrity
+# Including the current working directory (.) or other writable directory in root 's executable
+# path makes it likely that an attacker can gain superuser access by forcing an administrator
+# operating as root to execute a Trojan horse program.
+- name: 6.2.7 Ensure root PATH Integrity
+  block:
+    - name: 6.2.7 Ensure root PATH Integrity - run
+      script: 6_2_7.sh
+      changed_when: output_6_2_7.stdout | trim | length > 0
+      register: output_6_2_7
+    - name: 6.2.7 Ensure root PATH Integrity - print output
+      debug:
+        msg: "{{ output_6_2_7.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.7
+    - manual_setup
+    - scored
+# 6.2.8 Ensure users' home directories permissions are 750 or more restrictive
+# Group or world-writable user home directories may enable malicious users to steal
+# or modify other users' data or to gain another user's system privileges.
+- name: 6.2.8 Ensure users' home directories permissions are 750 or more restrictive
+  block:
+    - name: 6.2.8 Ensure users home directories permissions are 750 or more restrictive - list
+      script: 6_2_8.sh
+      changed_when: output_6_2_8.stdout | trim | length > 0
+      register: output_6_2_8
+    - name: 6.2.8 Ensure users' home directories permissions are 750 or more restrictive - save
+      debug:
+        msg: "{{ output_6_2_8.stdout_lines }}"
+    - name: 6.2.8 Ensure users home directories permissions are 750 or more restrictive - fix
+      file:
+        name: "{{ item }}"
+        mode: "g-w,o-rwx"
+      with_items: "{{ output_6_2_8.stdout_lines }}"
+      when: output_6_2_8.stdout | trim | length > 0
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.8
+    - scored
+# 6.2.9 Ensure users own their home directories
+# Since the user is accountable for files stored in the user home directory, the user must be
+# the owner of the directory.
+- name: 6.2.9 Ensure users own their home directories
+  block:
+    - name: 6.2.9 Ensure users own their home directories - list
+      script: 6_2_9.sh
+      changed_when: output_6_2_9.stdout | trim | length > 0
+      register: output_6_2_9
+    - name: 6.2.9 Ensure users own their home directories - print output
+      debug:
+        msg: "{{ output_6_2_9.stdout_lines }}"
+    - name: 6.2.9 Ensure users own their home directories - fix
+      file:
+        path: "{{ item.split(',')[0] }}"
+        group: "{{ item.split(',')[1] }}"
+        owner: "{{ item.split(',')[1] }}"
+        recurse: yes
+      with_items: "{{ output_6_2_9.stdout_lines }}"
+      when: output_6_2_9.stdout | trim | length > 0
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.9
+    - scored
+# 6.2.10 Ensure users' dot files are not group or world writable
+# Group or world-writable user configuration files may enable malicious users to steal or
+# modify other users' data or to gain another user's system privileges.
+- name: 6.2.10 Ensure users dot files are not group or world writable
+  block:
+    - name: 6.2.10 Ensure users dot files are not group or world writable - list
+      script: 6_2_10.sh
+      changed_when: output_6_2_10.stdout | trim | length > 0
+      register: output_6_2_10
+    - name: 6.2.10 Ensure users' dot files are not group or world writable - print output
+      debug:
+        msg: "{{ output_6_2_10.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.10
+    - manual_setup
+    - scored
+# 6.2.11 Ensure no users have .forward files
+# Use of the .forward file poses a security risk in that sensitive data may be inadvertently
+# transferred outside the organization. The .forward file also poses a risk as it can be used to
+# execute commands that may perform unintended actions.
+- name: 6.2.11 Ensure no users have .forward files
+  block:
+    - name: 6.2.11 Ensure no users have .forward files - list
+      script: 6_2_11.sh
+      changed_when: output_6_2_11.stdout | trim | length > 0
+      register: output_6_2_11
+    - name: 6.2.11 Ensure no users have .forward files  - print output
+      debug:
+        msg: "{{ output_6_2_11.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.11
+    - manual_setup
+    - scored
+# 6.2.12 Ensure no users have .netrc files
+# The .netrc file presents a significant security risk since it stores passwords in unencrypted
+# form. Even if FTP is disabled, user accounts may have brought over .netrc files from other
+# systems which could pose a risk to those systems.
+- name: 6.2.12 Ensure no users have .netrc files
+  block:
+    - name: 6.2.12 Ensure no users have .netrc files - list
+      script: 6_2_12.sh
+      changed_when: output_6_2_12.stdout | trim | length > 0
+      register: output_6_2_12
+    - name: 6.2.12 Ensure no users have .netrc files - print output
+      debug:
+        msg: "{{ output_6_2_12.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.12
+    - manual_setup
+    - scored
+# 6.2.13 Ensure users' .netrc Files are not group or world accessible
+# .netrcfiles may contain unencrypted passwords that may be used to attack other systems.
+- name: 6.2.13 Ensure users' .netrc Files are not group or world accessible
+  block:
+    - name: 6.2.13 Ensure users' .netrc Files are not group or world accessible - list
+      script: 6_2_13.sh
+      changed_when: output_6_2_13.stdout | trim | length > 0
+      register: output_6_2_13
+    - name: 6.2.13 Ensure users' .netrc Files are not group or world accessible - print output
+      debug:
+        msg: "{{ output_6_2_13.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.13
+    - manual_setup
+    - scored
+# 6.2.14 Ensure no users have .rhosts files
+# This action is only meaningful if .rhosts support is permitted in the file /etc/pam.conf.
+# Even though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, they
+# may have been brought over from other systems and could contain information useful to
+# an attacker for those other systems.
+- name: 6.2.14 Ensure no users have .rhosts files
+  block:
+    - name: 6.2.14 Ensure no users have .rhosts files - list
+      script: 6_2_14.sh
+      changed_when: output_6_2_14.stdout | trim | length > 0
+      register: output_6_2_14
+    - name: 6.2.11 Ensure no users have .rhosts files - print output
+      debug:
+        msg: "{{ output_6_2_14.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.14
+    - manual_setup
+    - scored
+# 6.2.15 Ensure all groups in /etc/passwd exist in /etc/group
+# Groups defined in the /etc/passwd file but not in the /etc/group file pose a threat to
+# system security since group permissions are not properly managed.
+- name: 6.2.15 Ensure all groups in /etc/passwd exist in /etc/group
+  block:
+    - name: 6.2.15 Ensure all groups in /etc/passwd exist in /etc/group - list
+      shell: |
+        for i in $(cut -s -d: -f4 /etc/passwd | sort -u); do
+            grep -q -P "^.*?:[^:]*:$i:" /etc/group
+            if [ $? -ne 0 ]; then
+                echo "Group $i is referenced by /etc/passwd but does not exist in /etc/group"
+            fi
+        done
+      changed_when: output_6_2_15.stdout | trim | length > 0
+      register: output_6_2_15
+    - name: 6.2.15 Ensure all groups in /etc/passwd exist in /etc/group - print output
+      debug:
+        msg: "{{ output_6_2_15.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.15
+    - manual_setup
+    - scored
+# 6.2.16 Ensure no duplicate UIDs exist
+# Users must be assigned unique UIDs for accountability and to ensure appropriate access
+# protections.
+- name: 6.2.16 Ensure no duplicate UIDs exist
+  block:
+    - name: 6.2.16 Ensure no duplicate UIDs exist - list
+      shell: |
+        cut -f3 -d":" /etc/passwd | sort -n | uniq -c | while read x; do
+            [ -z "$x" ] && break
+            set - $x
+            if [ $1 -gt 1 ]; then
+                users=$(awk -F: '($3 == n) { print $1 }' n=$2 /etc/passwd | xargs)
+                echo "Duplicate UID ($2): $users"
+            fi
+        done
+      changed_when: output_6_2_16.stdout | trim | length > 0
+      register: output_6_2_16
+    - name: 6.2.16 Ensure no duplicate UIDs exist - print output
+      debug:
+        msg: "{{ output_6_2_16.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.16
+    - manual_setup
+    - scored
+# 6.2.17 Ensure no duplicate GIDs exist
+# User groups must be assigned unique GIDs for accountability and to ensure appropriate
+# access protections.
+- name: 6.2.17 Ensure no duplicate GIDs exist
+  block:
+    - name: 6.2.17 Ensure no duplicate GIDs exist - list
+      shell: |
+        cut -d: -f3 /etc/group | sort | uniq -d | while read x; do
+            echo "Duplicate GID ($x) in /etc/group"
+        done
+      changed_when: output_6_2_17.stdout | trim | length > 0
+      register: output_6_2_17
+    - name: 6.2.17 Ensure no duplicate GIDs exist - print output
+      debug:
+        msg: "{{ output_6_2_17.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.17
+    - manual_setup
+    - scored
+# 6.2.18 Ensure no duplicate user names exist
+# If a user is assigned a duplicate user name, it will create and have access to files with the
+# first UID for that username in /etc/passwd . For example, if "test4" has a UID of 1000 and a
+# subsequent "test4" entry has a UID of 2000, logging in as "test4" will use UID 1000.
+# Effectively, the UID is shared, which is a security problem.
+- name: 6.2.18 Ensure no duplicate user names exist
+  block:
+    - name: 6.2.18 Ensure no duplicate user names exist - list
+      shell: |
+        cut -d: -f1 /etc/passwd | sort | uniq -d | while read x; do
+            echo "Duplicate login name ${x} in /etc/passwd"
+        done
+      changed_when: output_6_2_18.stdout | trim | length > 0
+      register: output_6_2_18
+    - name: 6.2.18 Ensure no duplicate user names exist - print output
+      debug:
+        msg: "{{ output_6_2_18.stdout_lines }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.18
+    - manual_setup
+    - scored
+# 6.2.19 Ensure no duplicate group names exist
+# If a group is assigned a duplicate group name, it will create and have access to files with the
+# first GID for that group in /etc/group . Effectively, the GID is shared, which is a security
+# problem.
+- name: 6.2.19 Ensure no duplicate group names exist
+  block:
+    - name: 6.2.19 Ensure no duplicate group names exist - list
+      shell: |
+        cut -d: -f1 /etc/group | sort | uniq -d | while read x; do
+            echo "Duplicate group name ${x} in /etc/group"
+        done
+      changed_when: output_6_2_19.stdout | trim | length > 0
+      register: output_6_2_19
+    - name: 6.2.19 Ensure no duplicate group names exist - print output
+      debug:
+        msg: "{{ output_6_2_19 }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.19
+    - manual_setup
+    - scored
+# 6.2.20 Ensure shadow group is empty
+# Any users assigned to the shadow group would be granted read access to the /etc/shadow
+# file. If attackers can gain read access to the /etc/shadow file, they can easily run a password
+# cracking program against the hashed passwords to break them. Other security information
+# that is stored in the /etc/shadow file (such as expiration) could also be useful to subvert
+# additional user accounts.
+- name: 6.2.20 Ensure shadow group is empty
+  block:
+    - name: 6.2.20 Ensure shadow group is empty - list
+      shell: |
+        grep ^shadow:[^:]*:[^:]*:[^:]+ /etc/group
+        awk -F: '($4 == "<shadow-gid>") { print }' /etc/passwd
+      changed_when: output_6_2_20.stdout | trim | length > 0
+      register: output_6_2_20
+    - name: 6.2.20 Ensure shadow group is empty - print output
+      debug:
+        msg: "{{ output_6_2_20 }}"
+  tags:
+    - section6
+    - level_1_server
+    - level_1_workstation
+    - 6.2.20
+    - manual_setup
+    - scored

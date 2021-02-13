@@ -1,0 +1,62 @@
+---
+# defaults file for CIS-Debian-10-Remediation
+
+
+# Section 3 Settings
+IPv6_is_enabled: no
+enable_firewall: yes
+firewall_type: nftables # Valid values are: ufw, nftables, iptables
+# ufw example
+#list_of_rules_to_allow:  
+#  - { desc: "ssh", rule: "allow", port: "22", proto: "tcp" }
+# nftables example
+list_of_rules_to_allow:
+  - { desc: "ssh", rule: "tcp dport ssh accept" }
+  - { desc: "ping", rule: "ip protocol icmp accept" }
+# iptables example
+#list_of_rules_to_allow:  
+#  - { desc: "ssh", port: "22", proto: "tcp" }
+
+# Section 4 Settings
+grub_backlog_limit: 8192
+max_log_file: 10
+#max_log_file_action: keep_logs
+max_log_file_action: rotate
+#admin_space_left_action: halt
+admin_space_left_action: email
+space_left_action: email
+action_mail_acct: root
+backlog_limit: "8192"
+architecture: "x86_64"
+# Ensure rsyslog is configured to send logs to a remote log host
+remoteSyslog:
+  enable: True
+  host: syslogserver
+  port: 514
+  protocol: tcp
+logrotate_policy: "daily"
+
+
+# Section 5 Settings
+# 5.2.18 Ensure SSH access is limited
+allowed_users: None # Put None or list of users space between each user
+allowed_groups: sys root sshadmins
+deny_users: None
+deny_groups: None
+# 5.4.1.1 Ensure password expiration is 365 days or less
+pass_expire_in_days: 310
+pass_warn_age: 7
+pass_min_days: 1
+# 5.4.1.1 Ensure password expiration is 365 days or less
+list_of_os_users:
+  - pippo
+# 5.4.1.4 Ensure inactive password lock is 30 days or less
+#Note: A value of -1 would disable this setting
+account_inactive: 30
+# 5.4.5 Ensure default user shell timeout is 900 seconds or less
+shell_timeout_sec: 900
+
+# Section 6 Settings
+withoutOwnerFileDirOwner: root
+withoutGroupFilesDirGroup: root
+
