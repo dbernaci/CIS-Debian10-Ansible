@@ -426,14 +426,14 @@
       script: 6_2_8.sh
       changed_when: output_6_2_8.stdout | trim | length > 0
       register: output_6_2_8
-    - name: 6.2.8 Ensure users' home directories permissions are 750 or more restrictive - save
+    - name: 6.2.8 Ensure users' home directories permissions are 750 or more restrictive - print output
       debug:
-        msg: "{{ output_6_2_8.stdout_lines }}"
+        msg: "{{ output_6_2_8.stdout_lines | select() | list }}"
     - name: 6.2.8 Ensure users home directories permissions are 750 or more restrictive - fix
       file:
         name: "{{ item }}"
         mode: "g-w,o-rwx"
-      with_items: "{{ output_6_2_8.stdout_lines }}"
+      with_items: "{{ output_6_2_8.stdout_lines | select() | list }}"
       when: output_6_2_8.stdout | trim | length > 0
   tags:
     - section6
