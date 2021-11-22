@@ -863,7 +863,6 @@
         dest: /etc/default/grub
         regexp: '^(GRUB_CMDLINE_LINUX=(?!.*apparmor)\"[^\"]*)(\".*)'
         replace: '\1 apparmor=1 security=apparmor\2'
-        follow: true
       register: output_1_7_1_2
     - name: 1.7.1.2 Ensure AppArmor is enabled in the bootloader configuration | reload
       shell: |
