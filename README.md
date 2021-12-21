@@ -120,7 +120,7 @@ Below an example of a playbook
 - hosts: host1
   become: yes
   remote_user: root
-  gather_facts: no
+  gather_facts: yes
   roles:
     - { role: "CIS-Debian10-Ansible",}
 ```
