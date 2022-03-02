@@ -460,6 +460,7 @@
         df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null
       register: output_1_1_21
       changed_when: output_1_1_21.stdout_lines | length > 0
+      check_mode: no
     - name: 1.1.21 Ensure sticky bit is set on all world-writable directories - fix
       script: 1_1_21.sh
       when: output_1_1_21.stdout_lines | length > 0
@@ -746,6 +747,7 @@
         dmesg | grep -E "NX|XD" | grep " active"
       register: output_1_6_1
       ignore_errors: yes
+      check_mode: no
     - name: 1.6.1 Ensure XD/NX support is enabled - print
       debug:
         msg: |
