@@ -366,7 +366,7 @@
         grep '^\+:' /etc/group && true || true
       changed_when: output_6_2_5.stdout | trim | length > 0
       register: output_6_2_5
-    - name: 6.2.4 Ensure no legacy "+" entries exist in /etc/group - print output
+    - name: 6.2.5 Ensure no legacy "+" entries exist in /etc/group - print output
       debug:
         msg: "{{ output_6_2_5.stdout_lines }}"
   tags:
@@ -555,7 +555,7 @@
       script: 6_2_14.sh
       changed_when: output_6_2_14.stdout | trim | length > 0
       register: output_6_2_14
-    - name: 6.2.11 Ensure no users have .rhosts files - print output
+    - name: 6.2.14 Ensure no users have .rhosts files - print output
       debug:
         msg: "{{ output_6_2_14.stdout_lines }}"
   tags:
