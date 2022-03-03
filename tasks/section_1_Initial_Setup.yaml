@@ -722,6 +722,7 @@
   register: output_1_5_3
   changed_when: false
   failed_when: false
+  check_mode: no
   tags:
     - section1
     - level_1_server
