@@ -36,7 +36,7 @@
         line: "install jffs2 /bin/true"
         state: present
         create: true
-    - name: 1.1.1.2 Ensure mounting of jffs2 filesystems is disabled
+    - name: 1.1.1.2 Ensure mounting of jffs2 filesystems is disabled - modprobe
       modprobe:
         name: jffs2
         state: absent
