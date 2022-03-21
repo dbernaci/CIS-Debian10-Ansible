@@ -105,5 +105,3 @@ local6,local7.*		-/var/log/localmessages
 # Emergencies are sent to everybody logged in.
 #
 *.emerg				:omusrmsg:*
-
-*.* action(type="omfwd" target="{{ remoteSyslog.host }}" port="{{ remoteSyslog.port }}" protocol="{{ remoteSyslog.protocol }}" action.resumeRetryCount="100" queue.type="LinkedList" queue.size="1000")
