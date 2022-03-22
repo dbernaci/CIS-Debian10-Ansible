@@ -23,11 +23,14 @@
   block:
     - name: 3.1.2 Ensure wireless interfaces are disabled - verify
       script: 3_1_2.sh
-      changed_when: output_3_1_2.stdout is search("is enabled")
+      changed_when: output_3_1_2 is search("is enabled")
       register: output_3_1_2
+    - name: 3.1.2 Ensure wireless interfaces are disabled - print output
+      debug:
+        msg: "{{ output_3_1_2 }}"
     - name: 3.1.2 Ensure wireless interfaces are disabled - fix
       script: 3_1_2_disable.sh
-      when: output_3_1_2.stdout is search("is enabled")
+      when: output_3_1_2 is search("is enabled")
   tags:
     - section3
     - level_1_server
