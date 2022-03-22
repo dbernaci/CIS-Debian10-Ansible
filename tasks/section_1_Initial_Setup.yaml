@@ -36,7 +36,7 @@
         line: "install jffs2 /bin/true"
         state: present
         create: true
-    - name: 1.1.1.2 Ensure mounting of jffs2 filesystems is disabled
+    - name: 1.1.1.2 Ensure mounting of jffs2 filesystems is disabled - modprobe
       modprobe:
         name: jffs2
         state: absent
@@ -247,12 +247,12 @@
     1.1.9 Ensure nosuid option set on /var/tmp partition,
     1.1.10 Ensure noexec option set on /var/tmp partition
   block:
-    - name:  1.1.7 Ensure separate partition exists for /var/tmp
+    - name: 1.1.7 Ensure separate partition exists for /var/tmp
       assert:
         that: ansible_mounts | byattr('mount', '/var/tmp') | list | length > 0
         fail_msg: "/var/tmp is NOT a separate partition"
         success_msg: "/var/tmp is a separate partition"
-    - name:  1.1.8 Ensure nodev option set on /var/tmp partition,
+    - name: 1.1.8 Ensure nodev option set on /var/tmp partition,
         1.1.9 Ensure nosuid option set on /var/tmp partition,
         1.1.10 Ensure noexec option set on /var/tmp partition
       mount:
@@ -314,7 +314,7 @@
 - name: 1.1.13 Ensure separate partition exists for /home,
     1.1.14 Ensure nodev option set on /home partition
   block:
-    - name:  1.1.13 Ensure separate partition exists for /home
+    - name: 1.1.13 Ensure separate partition exists for /home
       assert:
         that: ansible_mounts | byattr('mount', '/home') | list | length > 0
         fail_msg: "/home is NOT a separate partition"
@@ -629,9 +629,9 @@
         name: ["nullmailer", "aide-common", "aide"]
         state: present
         install_recommends: false
-    - name: Configure AIDE as appropriate for your environment - aideinit
+    - name: 1.4.1 Configure AIDE as appropriate for your environment - aideinit
       command: aideinit
-    - name: Configure AIDE as appropriate for your environment - aideinit db
+    - name: 1.4.1 Configure AIDE as appropriate for your environment - aideinit db
       shell: |
         mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
   tags:

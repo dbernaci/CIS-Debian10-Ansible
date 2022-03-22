@@ -59,9 +59,9 @@
     - scored
 # 3.2.2 Ensure IP forwarding is disabled
 # Setting the flags to 0 ensures that a system with multiple interfaces (for example, a hard proxy), will never be able to forward packets, and therefore, never serve as a router.
-- name: 3.2.2 Ensure IP forwarding is disabled"
+- name: 3.2.2 Ensure IP forwarding is disabled
   block:
-    - name: 3.2.2 Ensure IP forwarding is disabled - ipv4"
+    - name: 3.2.2 Ensure IP forwarding is disabled - ipv4
       sysctl:
         name: net.ipv4.ip_forward
         value: "0"
@@ -70,7 +70,7 @@
         reload: true
       notify:
         - ipv4 flush route
-    - name: 3.2.2 Ensure IP forwarding is disabled - ipv6"
+    - name: 3.2.2 Ensure IP forwarding is disabled - ipv6
       sysctl:
         name: net.ipv6.conf.all.forwarding
         value: "0"
@@ -80,11 +80,11 @@
       notify:
         - ipv4 flush route
       when: IPv6_is_enabled
-    - name: 3.2.2 Ensure IP forwarding is disabled - ipv4 fix"
+    - name: 3.2.2 Ensure IP forwarding is disabled - ipv4 fix
       shell: grep -Els "^\s*net\.ipv4\.ip_forward\s*=\s*1" /etc/sysctl.conf /etc/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /run/sysctl.d/*.conf | while read filename; do sed -ri "s/^\s*(net\.ipv4\.ip_forward\s*)(=)(\s*\S+\b).*$/#*REMOVED* \1/" $filename; echo $filename ; done
       register: output_3_2_2
       changed_when: output_3_2_2.stdout_lines | length > 0
-    - name: 3.2.2 Ensure IP forwarding is disabled - ipv6 fix"
+    - name: 3.2.2 Ensure IP forwarding is disabled - ipv6 fix
       shell: grep -Els "^\s*net\.ipv6\.conf\.all\.forwarding\s*=\s*1" /etc/sysctl.conf /etc/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /run/sysctl.d/*.conf | while read filename; do sed -ri "s/^\s*(net\.ipv6\.conf\.all\.forwarding\s*)(=)(\s*\S+\b).*$/# *REMOVED* \1/" $filename; echo $filename ; done
       register: output_3_2_2_v6
       changed_when: output_3_2_2_v6.stdout_lines | length > 0
@@ -555,7 +555,7 @@
 # 3.5.2.5 Ensure firewall rules exist for all open ports
 # Without a firewall rule configured for open ports default firewall policy will drop all
 # packets to these ports.
-- name: 3.5.2.5 Ensure firewall rules exist for all open ports - enable {{ item.desc }}"
+- name: 3.5.2.5 Ensure firewall rules exist for all open ports - enable "{{ item.desc }}"
   ufw:
     rule: "{{ item.rule }}"
     port: "{{ item.port }}"
@@ -671,7 +671,7 @@
     #   shell: nft chain inet filter INPUT { tcp dport ssh accept \;}
     # - name: 3.5.3.6 Ensure default deny firewall policy - enable ping
     #   shell: nft chain inet filter INPUT { ip protocol icmp accept \;}
-    - name: 3.5.3.6 Ensure default deny firewall policy - enable {{ item.desc }}
+    - name: 3.5.3.6 Ensure default deny firewall policy - enable "{{ item.desc }}"
       shell: nft add rule inet filter INPUT "{{ item.rule }}"
       with_items: "{{ list_of_rules_to_allow }}"
     - name: 3.5.3.6 Ensure default deny firewall policy - input

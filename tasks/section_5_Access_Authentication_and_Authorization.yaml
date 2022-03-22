@@ -894,7 +894,7 @@
 # via sudo, whereas su can only record that a user executed the su program.
 - name: 5.6 Ensure access to the su command is restricted
   block:
-    - name: 5.6 Ensure access to the su command is restricted -groupadd
+    - name: 5.6 Ensure access to the su command is restricted - groupadd
       command: groupadd sugroup
     - name: 5.6 Ensure access to the su command is restricted - change
       lineinfile:
