@@ -423,6 +423,8 @@
     owner: root
     group: root
     mode: 0644
+  notify:
+    - rsyslog restart
   tags:
     - section4
     - level_1_server
@@ -437,6 +439,8 @@
     dest: /etc/rsyslog.conf
     regexp: '^\$FileCreateMode (0640)?'
     line: "$FileCreateMode 0640"
+  notify:
+    - rsyslog restart
   tags:
     - section4
     - level_1_server
@@ -448,9 +452,24 @@
 # gains root access on the local system, they could tamper with or remove log data that is
 # stored on the local system
 - name: 4.2.1.5 Ensure rsyslog is configured to send logs to a remote log host
-  lineinfile:
-    path: /etc/rsyslog.conf
-    line: '*.* action(type="omfwd" target="{{ remoteSyslog.host }}" port="{{ remoteSyslog.port }}" protocol="{{ remoteSyslog.protocol }}" action.resumeRetryCount="100" queue.type="LinkedList" queue.size="1000")'
+  block:
+    - name: 4.2.1.5 Ensure rsyslog is configured to send logs to a remote log host - check for omfwd
+      shell: |
+        grep '^\*.\* action(type="omfwd"' /etc/rsyslog.conf && true || true
+      register: output_4_2_1_5
+      changed_when: output_4_2_1_5.stdout | trim | length == 0
+      check_mode: no
+    - name: 4.2.1.5 Ensure rsyslog is configured to send logs to a remote log host - print output
+      debug:
+        msg: "{{ output_4_2_1_5.stdout_lines }}"
+    - name: 4.2.1.5 Ensure rsyslog is configured to send logs to a remote log host - add omfwd
+      lineinfile:
+        path: /etc/rsyslog.conf
+        backup: yes
+        line: '*.* action(type="omfwd" target="{{ remoteSyslog.host }}" port="{{ remoteSyslog.port }}" protocol="{{ remoteSyslog.protocol }}" action.resumeRetryCount="100" queue.type="LinkedList" queue.size="1000")'
+      when: output_4_2_1_5.stdout | trim | length == 0
+      notify:
+        - rsyslog restart
   when: remoteSyslog.enable == True
   tags:
     - section4
