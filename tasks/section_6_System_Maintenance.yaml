@@ -159,6 +159,7 @@
       shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -0002 2> /dev/null && true || true
       changed_when: output_6_1_10.stdout | trim | length > 0
       register: output_6_1_10
+      check_mode: no
     - name: 6.1.10 Ensure no world writable files exist - print output
       debug:
         msg: "{{ output_6_1_10.stdout_lines }}"
@@ -183,6 +184,7 @@
       shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser 2> /dev/null && true || true
       changed_when: output_6_1_11.stdout | trim | length > 0
       register: output_6_1_11
+      check_mode: no
     - name: 6.1.11 Ensure no unowned files or directories exist - print output
       debug:
         msg: "{{ output_6_1_11.stdout_lines }}"
@@ -207,6 +209,7 @@
       shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -nogroup 2> /dev/null && true || true
       changed_when: output_6_1_12.stdout | trim | length > 0
       register: output_6_1_12
+      check_mode: no
     - name: 6.1.12 Ensure no ungrouped files or directories exist - print output
       debug:
         msg: "{{ output_6_1_12.stdout_lines }}"
@@ -231,6 +234,7 @@
       shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -4000 2> /dev/null && true || true
       changed_when: output_6_1_13.stdout | trim | length > 0
       register: output_6_1_13
+      check_mode: no
     - name: 6.1.13 Audit SUID executables - print output
       debug:
         msg: "{{ output_6_1_13.stdout_lines }}"
@@ -252,6 +256,7 @@
       shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -2000 2> /dev/null && true || true
       changed_when: output_6_1_14.stdout | trim | length > 0
       register: output_6_1_14
+      check_mode: no
     - name: 6.1.14 Audit SGID executables - print output
       debug:
         msg: "{{ output_6_1_14.stdout_lines }}"
@@ -273,6 +278,7 @@
         awk -F: '($2 == "" ) { print $1 }' /etc/shadow
       changed_when: output_6_2_1.stdout | trim | length > 0
       register: output_6_2_1
+      check_mode: no
     - name: 6.2.1 Ensure password fields are not empty - print output
       debug:
         msg: "{{ output_6_2_1.stdout_lines }}"
@@ -298,6 +304,7 @@
         grep '^\+:' /etc/passwd && true || true
       changed_when: output_6_2_2.stdout | trim | length > 0
       register: output_6_2_2
+      check_mode: no
     - name: 6.2.2 Ensure no legacy "+" entries exist in /etc/passwd - print output
       debug:
         msg: "{{ output_6_2_2.stdout_lines }}"
@@ -323,6 +330,7 @@
         done
       changed_when: output_6_2_3.stdout | trim | length > 0
       register: output_6_2_3
+      check_mode: no
     - name: 6.2.3 Ensure all users' home directories exist - print output
       debug:
         msg: "{{ output_6_2_3.stdout_lines }}"
@@ -347,6 +355,7 @@
         grep '^\+:' /etc/shadow && true || true
       changed_when: output_6_2_4.stdout | trim | length > 0
       register: output_6_2_4
+      check_mode: no
     - name: 6.2.4 Ensure no legacy "+" entries exist in /etc/shadow - print output
       debug:
         msg: "{{ output_6_2_4.stdout_lines }}"
@@ -366,7 +375,8 @@
         grep '^\+:' /etc/group && true || true
       changed_when: output_6_2_5.stdout | trim | length > 0
       register: output_6_2_5
-    - name: 6.2.5 Ensure no legacy "+" entries exist in /etc/group - print output
+      check_mode: no
+    - name: 6.2.4 Ensure no legacy "+" entries exist in /etc/group - print output
       debug:
         msg: "{{ output_6_2_5.stdout_lines }}"
   tags:
@@ -387,6 +397,7 @@
         awk -F: '($3 == 0) { print $1 }' /etc/passwd | grep -v root && true || true
       changed_when: output_6_2_6.stdout | trim | length > 0
       register: output_6_2_6
+      check_mode: no
     - name: 6.2.6 Ensure root is the only UID 0 account - print output
       debug:
         msg: "{{ output_6_2_6.stdout_lines }}"
@@ -407,6 +418,7 @@
       script: 6_2_7.sh
       changed_when: output_6_2_7.stdout | trim | length > 0
       register: output_6_2_7
+      check_mode: no
     - name: 6.2.7 Ensure root PATH Integrity - print output
       debug:
         msg: "{{ output_6_2_7.stdout_lines }}"
@@ -426,6 +438,7 @@
       script: 6_2_8.sh
       changed_when: output_6_2_8.stdout | trim | length > 0
       register: output_6_2_8
+      check_mode: no
     - name: 6.2.8 Ensure users' home directories permissions are 750 or more restrictive - print output
       debug:
         msg: "{{ output_6_2_8.stdout_lines | select() | list }}"
@@ -450,6 +463,7 @@
       script: 6_2_9.sh
       changed_when: output_6_2_9.stdout | trim | length > 0
       register: output_6_2_9
+      check_mode: no
     - name: 6.2.9 Ensure users own their home directories - print output
       debug:
         msg: "{{ output_6_2_9.stdout_lines }}"
@@ -476,6 +490,7 @@
       script: 6_2_10.sh
       changed_when: output_6_2_10.stdout | trim | length > 0
       register: output_6_2_10
+      check_mode: no
     - name: 6.2.10 Ensure users' dot files are not group or world writable - print output
       debug:
         msg: "{{ output_6_2_10.stdout_lines }}"
@@ -496,6 +511,7 @@
       script: 6_2_11.sh
       changed_when: output_6_2_11.stdout | trim | length > 0
       register: output_6_2_11
+      check_mode: no
     - name: 6.2.11 Ensure no users have .forward files  - print output
       debug:
         msg: "{{ output_6_2_11.stdout_lines }}"
@@ -516,6 +532,7 @@
       script: 6_2_12.sh
       changed_when: output_6_2_12.stdout | trim | length > 0
       register: output_6_2_12
+      check_mode: no
     - name: 6.2.12 Ensure no users have .netrc files - print output
       debug:
         msg: "{{ output_6_2_12.stdout_lines }}"
@@ -534,6 +551,7 @@
       script: 6_2_13.sh
       changed_when: output_6_2_13.stdout | trim | length > 0
       register: output_6_2_13
+      check_mode: no
     - name: 6.2.13 Ensure users' .netrc Files are not group or world accessible - print output
       debug:
         msg: "{{ output_6_2_13.stdout_lines }}"
@@ -555,7 +573,8 @@
       script: 6_2_14.sh
       changed_when: output_6_2_14.stdout | trim | length > 0
       register: output_6_2_14
-    - name: 6.2.14 Ensure no users have .rhosts files - print output
+      check_mode: no
+    - name: 6.2.11 Ensure no users have .rhosts files - print output
       debug:
         msg: "{{ output_6_2_14.stdout_lines }}"
   tags:
@@ -580,6 +599,7 @@
         done
       changed_when: output_6_2_15.stdout | trim | length > 0
       register: output_6_2_15
+      check_mode: no
     - name: 6.2.15 Ensure all groups in /etc/passwd exist in /etc/group - print output
       debug:
         msg: "{{ output_6_2_15.stdout_lines }}"
@@ -607,6 +627,7 @@
         done
       changed_when: output_6_2_16.stdout | trim | length > 0
       register: output_6_2_16
+      check_mode: no
     - name: 6.2.16 Ensure no duplicate UIDs exist - print output
       debug:
         msg: "{{ output_6_2_16.stdout_lines }}"
@@ -629,6 +650,7 @@
         done
       changed_when: output_6_2_17.stdout | trim | length > 0
       register: output_6_2_17
+      check_mode: no
     - name: 6.2.17 Ensure no duplicate GIDs exist - print output
       debug:
         msg: "{{ output_6_2_17.stdout_lines }}"
@@ -653,6 +675,7 @@
         done
       changed_when: output_6_2_18.stdout | trim | length > 0
       register: output_6_2_18
+      check_mode: no
     - name: 6.2.18 Ensure no duplicate user names exist - print output
       debug:
         msg: "{{ output_6_2_18.stdout_lines }}"
@@ -676,6 +699,7 @@
         done
       changed_when: output_6_2_19.stdout | trim | length > 0
       register: output_6_2_19
+      check_mode: no
     - name: 6.2.19 Ensure no duplicate group names exist - print output
       debug:
         msg: "{{ output_6_2_19 }}"
@@ -700,6 +724,7 @@
         awk -F: '($4 == "<shadow-gid>") { print }' /etc/passwd
       changed_when: output_6_2_20.stdout | trim | length > 0
       register: output_6_2_20
+      check_mode: no
     - name: 6.2.20 Ensure shadow group is empty - print output
       debug:
         msg: "{{ output_6_2_20 }}"

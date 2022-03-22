@@ -578,9 +578,11 @@
   block:
     - name: 3.5.3.1 Ensure iptables are flushed - iptables
       shell: iptables -L
+      check_mode: no
     - name: 3.5.3.1 Ensure iptables are flushed - ip6tables
       shell: ip6tables -L
       when: IPv6_is_enabled
+      check_mode: no
   when: enable_firewall and firewall_type == "nftables"
   tags:
     - section3
