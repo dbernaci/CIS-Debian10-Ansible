@@ -552,10 +552,27 @@
 # archive these files to another system and spend less time looking through inordinately
 # large log files.
 - name: 4.3 Ensure logrotate is configured
-  replace:
-    path: /etc/logrotate.d/rsyslog
-    regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
-    replace: "\\1{{ logrotate_policy }}"
+  block:
+    - name: 4.3 Ensure logrotate is configured - set logrotate policy
+      replace:
+        path: /etc/logrotate.d/rsyslog
+        regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
+        replace: "\\1{{ logrotate_policy }}"
+    - name: 4.3 Ensure logrotate is configured - check for /var/log/warn
+      shell: |
+        grep '^/var/log/warn$' /etc/logrotate.d/rsyslog && true || true
+      register: output_4_3
+      changed_when: output_4_3.stdout | trim | length == 0
+      check_mode: no
+    - name: 4.3 Ensure logrotate is configured - print output
+      debug:
+        msg: "{{ output_4_3.stdout_lines }}"
+    - name: 4.3 Ensure logrotate is configured - add /var/log/warn
+      replace:
+        path: /etc/logrotate.d/rsyslog
+        regexp: '^{$'
+        replace: "/var/log/warn\n{"
+      when: output_4_3.stdout | trim | length == 0
   tags:
     - section4
     - level_1_server
