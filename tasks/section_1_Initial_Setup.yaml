@@ -356,7 +356,7 @@
     fstype: "{{ item.fstype }}"
     src: "{{ item.device }}"
     opts: "{{ item.options.split(',') | union(['nodev']) | join(',') }}"
-  with_items: "{{ all_mounts.stdout | default('{}') | from_json |  byattr('mount', '/dev/shm') }}"
+  with_items: "{{ all_mounts.stdout | default('{}') | from_json | byattr('mount', '/dev/shm') | list }}"
   tags:
     - section1
     - level_1_server
@@ -381,7 +381,7 @@
     fstype: "{{ item.fstype }}"
     src: "{{ item.device }}"
     opts: "{{ item.options.split(',') | union(['nosuid']) | join(',') }}"
-  with_items: "{{ all_mounts.stdout | default('{}') | from_json |  byattr('mount', '/dev/shm') }}"
+  with_items: "{{ all_mounts.stdout | default('{}') | from_json | byattr('mount', '/dev/shm') | list }}"
   tags:
     - section1
     - level_1_server
@@ -406,7 +406,7 @@
     fstype: "{{ item.fstype }}"
     src: "{{ item.device }}"
     opts: "{{ item.options.split(',') | union(['noexec']) | join(',') }}"
-  with_items: "{{ all_mounts.stdout | default('{}') | from_json |  byattr('mount', '/dev/shm') }}"
+  with_items: "{{ all_mounts.stdout | default('{}') | from_json | byattr('mount', '/dev/shm') | list }}"
   tags:
     - section1
     - level_1_server
