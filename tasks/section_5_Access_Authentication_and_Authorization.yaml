@@ -146,6 +146,7 @@
       command: dpkg -s at
       ignore_errors: true
       register: output_5_1_8_dpkg
+      check_mode: no
     - name: 5.1.8 Ensure at/cron is restricted to authorized users - /etc/at.deny
       file:
         path: /etc/at.deny
@@ -193,9 +194,10 @@
   block:
     - name: 5.2.2 Ensure permissions on SSH private host key files are configured - find keys
       shell: |
-        find /etc/ssh -xdev -type f -name 'ssh_host_*_key'  && true || true
+        find /etc/ssh -xdev -type f -name 'ssh_host_*_key' && true || true
       register: output_5_2_2
       changed_when: output_5_2_2.rc != 0
+      check_mode: no
     - name: 5.2.2 Ensure permissions on SSH private host key files are configured - fix permissions
       file:
         dest: "{{ item }}"
@@ -221,6 +223,7 @@
         find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' && true || true
       register: output_5_2_3
       changed_when: output_5_2_3.rc != 0
+      check_mode: no
     - name: 5.2.3 Ensure permissions on SSH public host key files are configured - fix permissions
       file:
         dest: "{{ item }}"
@@ -748,6 +751,7 @@
         done
       register: output_5_4_1_5
       changed_when: output_5_4_1_5.stdout_lines | length > 0
+      check_mode: no
     - name: 5.4.1.5 Ensure all users last password change date is in the past - print list
       debug:
         msg: "{{ output_5_4_1_5.stdout_lines }}"
