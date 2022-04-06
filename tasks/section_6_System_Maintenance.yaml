@@ -451,7 +451,7 @@
         name: "{{ item }}"
         mode: "g-w,o-rwx"
       with_items: "{{ output_6_2_8.stdout | regex_search('^\/.*', multiline=True) | trim }}"
-      when: output_6_2_8.stdout | trim | length > 0
+      when: (output_6_2_8.stdout | regex_search('^\/.*', multiline=True) | trim != 'None' and output_6_2_8.stdout | trim | length > 0)
   tags:
     - section6
     - level_1_server
