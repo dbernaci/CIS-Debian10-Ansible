@@ -11,7 +11,7 @@
       register: output_6_1_1
     - name: 6.1.1 Audit system file permissions - print output
       debug:
-        msg: "{{ output_6_1_1.stdout_lines }}"
+        msg: "{{ output_6_1_1 }}"
   tags:
     - section6
     - level_2_server

@@ -267,6 +267,7 @@
         that: ansible_mounts | byattr('mount', '/var/tmp') | list | length > 0
         fail_msg: "/var/tmp is NOT a separate partition"
         success_msg: "/var/tmp is a separate partition"
+      when: debian10cis_rules_1_1_7
     - name: 1.1.8 Ensure nodev option set on /var/tmp partition,
         1.1.9 Ensure nosuid option set on /var/tmp partition,
         1.1.10 Ensure noexec option set on /var/tmp partition
@@ -754,8 +755,8 @@
     - level_1_workstation
     - 1.5.2
     - manual_setup
-  when: debian10cis_rules_1_5_2
     - scored
+  when: debian10cis_rules_1_5_2
 # 1.5.3 Ensure authentication required for single user mode
 # Single user mode is used for recovery when the system detects an issue during boot or by
 # manual selection from the bootloader.
