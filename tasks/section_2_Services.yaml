@@ -65,7 +65,6 @@
     - level_1_workstation
     - 2.2.1.1
     - scored
-  when: debian10cis_rules_2_2_1_2
   when: debian10cis_rules_2_2_1_1
 # 2.2.1.2 Ensure systemd-timesyncd is configured
 # The systemd-timesyncd service specifically implements only SNTP. This minimalistic
