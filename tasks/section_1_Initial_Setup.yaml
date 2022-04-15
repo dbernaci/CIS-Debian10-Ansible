@@ -217,7 +217,7 @@
         fstype: "{{ item.fstype }}"
         opts: defaults,nodev,nosuid,noexec
         state: present
-      with_items: "{{ ansible_mounts | byattr('mount', '/tmp') }}"
+      with_items: "{{ ansible_mounts | byattr('mount', '/tmp') | list }}"
   tags:
     - section1
     - level_1_server
@@ -277,7 +277,7 @@
         fstype: "{{ item.fstype }}"
         opts: defaults,nodev,nosuid,noexec
         state: present
-      with_items: "{{ ansible_mounts | byattr('mount', '/var/tmp') }}"
+      with_items: "{{ ansible_mounts | byattr('mount', '/var/tmp') | list }}"
   tags:
     - section1
     - level_1_server
@@ -348,7 +348,7 @@
         fstype: "{{ item.fstype }}"
         opts: defaults,nodev
         state: present
-      with_items: " {{ ansible_mounts | byattr('mount', '/home') }}"
+      with_items: " {{ ansible_mounts | byattr('mount', '/home') | list }}"
   tags:
     - section1
     - level_2_server

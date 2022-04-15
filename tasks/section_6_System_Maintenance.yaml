@@ -460,15 +460,19 @@
       changed_when: output_6_2_8.stdout | trim | length > 0
       register: output_6_2_8
       check_mode: no
-    - name: 6.2.8 Ensure users' home directories permissions are 750 or more restrictive - print output
+    - name: 6.2.8 Ensure users' home directories permissions are 750 or more restrictive - print missing dirs
       debug:
-        msg: "{{ output_6_2_8.stdout_lines | select() | list }}"
+        msg: "{{ output_6_2_8.stdout | regex_search('.*does not exist.*', multiline=True) | trim }}"
+      when: output_6_2_8.stdout | regex_search('.*does not exist.*', multiline=True) | trim | length > 0
+    - name: 6.2.8 Ensure users' home directories permissions are 750 or more restrictive - print dirs to chmod
+      debug:
+        msg: "{{ output_6_2_8.stdout | regex_search('^\/.*', multiline=True) | trim }}"
     - name: 6.2.8 Ensure users home directories permissions are 750 or more restrictive - fix
       file:
         name: "{{ item }}"
         mode: "g-w,o-rwx"
-      with_items: "{{ output_6_2_8.stdout_lines | select() | list }}"
-      when: output_6_2_8.stdout | trim | length > 0
+      with_items: "{{ output_6_2_8.stdout | regex_search('^\/.*', multiline=True) | trim }}"
+      when: (output_6_2_8.stdout | regex_search('^\/.*', multiline=True) | trim != 'None' and output_6_2_8.stdout | trim | length > 0)
   tags:
     - section6
     - level_1_server
