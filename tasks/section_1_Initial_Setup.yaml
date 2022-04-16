@@ -24,6 +24,7 @@
     - freevxfs
     - modprobe
     - scored
+  when: debian10cis_rules_1_1_1_1
 # 1.1.1.2  Ensure mounting of jffs2 filesystems is disabled
 # The jffs2 (journaling flash filesystem 2) filesystem type is a log-structured filesystem used
 # in flash memory devices.
@@ -49,6 +50,7 @@
     - jffs2
     - modprobe
     - scored
+  when: debian10cis_rules_1_1_1_2
 # 1.1.1.3 Ensure mounting of hfs filesystems is disabled
 # The hfs filesystem type is a hierarchical filesystem that allows you to mount Mac OS
 # filesystems.
@@ -74,6 +76,7 @@
     - modprobe
     - hfs
     - scored
+  when: debian10cis_rules_1_1_1_3
 # 1.1.1.4 Ensure mounting of hfsplus filesystems is disabled
 # The hfsplus filesystem type is a hierarchical filesystem designed to replace hfs that allows
 # you to mount Mac OS filesystems.
@@ -99,6 +102,7 @@
     - hfsplus
     - modprobe
     - scored
+  when: debian10cis_rules_1_1_1_4
 # 1.1.1.5 Ensure mounting of squashfs filesystems is disabled
 # The squashfs filesystem type is a compressed read-only Linux filesystem embedded in
 # small footprint systems (similar to cramfs ). A squashfs image can be used without having
@@ -125,6 +129,7 @@
     - squashfs
     - modprobe
     - scored
+  when: debian10cis_rules_1_1_1_5
 # 1.1.1.6 Ensure mounting of udf filesystems is disabled
 # The udf filesystem type is the universal disk format used to implement ISO/IEC 13346 and
 # ECMA-167 specifications. This is an open vendor filesystem type for data storage on a
@@ -152,6 +157,7 @@
     - udf
     - modprobe
     - scored
+  when: debian10cis_rules_1_1_1_6
 # 1.1.1.7 Ensure mounting of FAT filesystems is limited
 # The FAT filesystem format is primarily used on older windows systems and portable USB
 # drives or flash modules. It comes in three types FAT12 , FAT16 , and FAT32 all of which are
@@ -181,6 +187,7 @@
     - fat
     - modprobe
     - not-scored
+  when: debian10cis_rules_1_1_1_7
 # 1.1.2 Ensure /tmp is configured
 # The /tmp directory is a world-writable directory used for temporary storage by all users
 # and some applications.
@@ -200,6 +207,7 @@
         that: ansible_mounts | byattr('mount', '/tmp') | list | length > 0
         fail_msg: "/tmp is NOT a separate partition"
         success_msg: "/tmp is a separate partition"
+      when: debian10cis_rules_1_1_2
     - name: 1.1.3 Ensure nodev option set on /tmp partition,
         1.1.4 Ensure nosuid option set on /tmp partition,
         1.1.5 Ensure noexec option set on /tmp partition
@@ -221,6 +229,10 @@
     - tmp
     - mount
     - scored
+  when: debian10cis_rules_1_1_2 or 
+        debian10cis_rules_1_1_3 or 
+        debian10cis_rules_1_1_4 or 
+        debian10cis_rules_1_1_5
 # 1.1.6 Ensure separate partition exists for /var
 # The /var directory is used by daemons and other system services to temporarily store
 # dynamic data. Some directories created by these processes may be world-writable.
@@ -255,6 +267,7 @@
         that: ansible_mounts | byattr('mount', '/var/tmp') | list | length > 0
         fail_msg: "/var/tmp is NOT a separate partition"
         success_msg: "/var/tmp is a separate partition"
+      when: debian10cis_rules_1_1_7
     - name: 1.1.8 Ensure nodev option set on /var/tmp partition,
         1.1.9 Ensure nosuid option set on /var/tmp partition,
         1.1.10 Ensure noexec option set on /var/tmp partition
@@ -276,6 +289,10 @@
     - mount
     - tmp
     - scored
+  when: debian10cis_rules_1_1_7 or  
+        debian10cis_rules_1_1_8 or
+        debian10cis_rules_1_1_9 or 
+        debian10cis_rules_1_1_10
 # 1.1.11 Ensure separate partition exists for /var/log
 # There are two important reasons to ensure that system logs are stored on a separate
 # partition: protection against resource exhaustion (since logs can grow quite large) and
@@ -292,6 +309,7 @@
     - 1.1.11
     - manual_setup
     - scored
+  when: debian10cis_rules_1_1_11 
 # 1.1.12 Ensure separate partition exists for /var/log/audit
 # There are two important reasons to ensure that data gathered by auditd is stored on a
 # separate partition: protection against resource exhaustion (since the audit.log file can
@@ -310,6 +328,7 @@
     - 1.1.12
     - manual_setup
     - scored
+  when: debian10cis_rules_1_1_12 
 # 1.1.13 Ensure separate partition exists for /home
 # If the system is intended to support local users, create a separate partition for the /home
 # directory to protect against resource exhaustion and restrict the type of files that can be
@@ -338,6 +357,8 @@
     - 1.1.14
     - manual_setup
     - scored
+  when: debian10cis_rules_1_1_13 or 
+        debian10cis_rules_1_1_14
 # 1.1.15 Ensure nodev option set on /dev/shm partition
 # The nodev mount option specifies that the filesystem cannot contain special devices.
 # Since the user partitions are not intended to support devices, set this option to ensure that
@@ -349,6 +370,7 @@
     - level_1_workstation
     - 1.1.15
     - scored
+  when: debian10cis_rules_1_1_15
 - name: 1.1.15 Ensure nodev option set on /dev/shm partition
   mount:
     name: "{{ item.mount }}"
@@ -374,6 +396,7 @@
     - level_1_workstation
     - 1.1.16
     - scored
+  when: debian10cis_rules_1_1_16
 - name: 1.1.16 Ensure nosuid option set on /dev/shm partition
   mount:
     name: "{{ item.mount }}"
@@ -399,6 +422,7 @@
     - level_1_workstation
     - 1.1.17
     - scored
+  when: debian10cis_rules_1_1_17
 - name: 1.1.17 Ensure noexec option set on /dev/shm partition
   mount:
     name: "{{ item.mount }}"
@@ -427,6 +451,7 @@
     - 1.1.18
     - manual_setup
     - not-scored
+  when: debian10cis_rules_1_1_18
 # 1.1.19 Ensure nosuid option set on removable media partitions
 # Setting this option on a file system prevents users from introducing privileged programs
 # onto the system and allowing non-root users to execute them.
@@ -440,6 +465,7 @@
     - 1.1.19
     - manual_setup
     - not-scored
+  when: debian10cis_rules_1_1_19 
 # 1.1.20 Ensure noexec option set on removable media partitions
 # Setting this option on a file system prevents users from executing programs from the
 # removable media. This deters users from being able to introduce potentially malicious
@@ -454,6 +480,7 @@
     - 1.1.20
     - manual_setup
     - not-scored
+  when: debian10cis_rules_1_1_20 
 # 1.1.21 Ensure sticky bit is set on all world-writable directories
 # This feature prevents the ability to delete or rename files in world writable directories
 # (such as /tmp ) that are owned by another user.
@@ -474,6 +501,7 @@
     - level_1_workstation
     - 1.1.21
     - scored
+  when: debian10cis_rules_1_1_21
 # 1.1.22 Disable Automounting
 # autofs allows automatic mounting of devices, typically including CD/DVDs and USB drives.
 # Note: This control should align with the tolerance of the use of portable drives and optical
@@ -493,6 +521,7 @@
     - 1.1.22
     - autofs
     - scored
+  when: debian10cis_rules_1_1_22
 # 1.1.23 Disable USB Storage
 # USB storage provides a means to transfer and store files insuring persistence and
 # availability of the files independent of network connection status. Its popularity and utility
@@ -522,7 +551,8 @@
     - usb_storage
     - modprobe
     - scored
-# 1.2 Configure Software Updates
+  when: debian10cis_rules_1_1_23
+# 1.2 Configure Software Updateswhen: debian10cis_rules_1_1_
 # For the purpose of this benchmark, the requirement is to ensure that a patch management
 # system is configured and maintained. The specifics on patch update procedures are left to
 # the organization.
@@ -543,6 +573,7 @@
     - 1.2.1
     - manual_setup
     - not-scored
+  when: debian10cis_rules_1_2_1
 # 1.2.2 Ensure GPG keys are configured
 # Most packages managers implement GPG key signing to verify package integrity during installation.
 # It is important to ensure that updates are obtained from a valid source to protect against
@@ -562,6 +593,7 @@
     - 1.2.2
     - manual_setup
     - not-scored
+  when: debian10cis_rules_1_2_2
 # 1.3 Configure sudo
 # sudo allows a permitted user to execute a command as the superuser or another user, as
 # specified by the security policy. The invoking user's real (not effective) user ID is used to
@@ -582,6 +614,7 @@
     - level_1_workstation
     - 1.3.1
     - scored
+  when: debian10cis_rules_1_3_1
 # 1.3.2 Ensure sudo commands use pty
 # sudo can be configured to run only from a pseudo-pty
 - name: 1.3.2 Ensure sudo commands use pty
@@ -598,6 +631,7 @@
     - level_1_workstation
     - 1.3.2
     - scored
+  when: debian10cis_rules_1_3_2
 # 1.3.3 Ensure sudo log file exists
 # sudo can use a custom log file.
 - name: 1.3.3 Ensure sudo log file exists
@@ -614,6 +648,7 @@
     - level_1_workstation
     - 1.3.3
     - scored
+  when: debian10cis_rules_1_3_3
 # 1.4 Filesystem Integrity Checking
 # AIDE is a file integrity checking tool, similar in nature to Tripwire. While it cannot prevent
 # intrusions, it can detect unauthorized changes to configuration files by alerting when the
@@ -645,6 +680,7 @@
     - level_1_workstation
     - 1.4.1
     - scored
+  when: debian10cis_rules_1_4_1
 # 1.4.2 Ensure filesystem integrity is regularly checked
 # Periodic checking of the filesystem integrity is needed to detect changes to the filesystem.
 # Notes:
@@ -670,6 +706,7 @@
     - level_1_workstation
     - 1.4.2
     - scored
+  when: debian10cis_rules_1_4_2
 # 1.5 Secure Boot Settings
 # The recommendations in this section focus on securing the bootloader and settings
 # involved in the boot process directly.
@@ -691,6 +728,7 @@
     - level_1_workstation
     - 1.5.1
     - scored
+  when: debian10cis_rules_1_5_1
 # 1.5.1 Ensure bootloader password is set
 # Setting the boot loader password will require that anyone rebooting the system must enter
 # a password before being able to set command line boot parameters
@@ -718,6 +756,7 @@
     - 1.5.2
     - manual_setup
     - scored
+  when: debian10cis_rules_1_5_2
 # 1.5.3 Ensure authentication required for single user mode
 # Single user mode is used for recovery when the system detects an issue during boot or by
 # manual selection from the bootloader.
@@ -733,6 +772,7 @@
     - level_1_workstation
     - 1.5.3
     - scored
+  when: debian10cis_rules_1_5_3
 # 1.6 Additional Process Hardening
 # 1.6.1 Ensure XD/NX support is enabled
 # Recent processors in the x86 family support the ability to prevent code execution on a per
@@ -768,6 +808,7 @@
     - level_1_workstation
     - 1.6.1
     - scored
+  when: debian10cis_rules_1_6_1
 # 1.6.2 Ensure address space layout randomization (ASLR) is enabled
 # Address space layout randomization (ASLR) is an exploit mitigation technique which
 # randomly arranges the address space of key data areas of a process.
@@ -785,6 +826,7 @@
     - level_1_workstation
     - 1.6.2
     - scored
+  when: debian10cis_rules_1_6_2
 # 1.6.3 Ensure prelink is disabled
 - name: 1.6.3 Ensure prelink is disabled
   block:
@@ -801,6 +843,7 @@
     - level_1_workstation
     - 1.6.3
     - scored
+  when: debian10cis_rules_1_6_3
 # 1.6.4 Ensure core dumps are restricted
 # A core dump is the memory of an executable program. It is generally used to determine
 # why a program aborted. It can also be used to glean confidential information from a core
@@ -837,6 +880,7 @@
     - level_1_workstation
     - 1.6.4
     - scored
+  when: debian10cis_rules_1_6_4
 # 1.7 Mandatory Access Control
 # Mandatory Access Control (MAC) provides an additional layer of access restrictions to
 # processes on top of the base Discretionary Access Controls. By restricting how processes
@@ -858,6 +902,7 @@
     - level_1_workstation
     - 1.7.1.1
     - scored
+  when: debian10cis_rules_1_7_1_1
 # 1.7.1.2 Ensure AppArmor is enabled in the bootloader configuration
 # Configure AppArmor to be enabled at boot time and verify that it has not been overwritten
 # by the bootloader boot parameters.
@@ -881,6 +926,7 @@
     - level_1_workstation
     - 1.7.1.2
     - scored
+  when: debian10cis_rules_1_7_1_2
 # 1.7.1.3 Ensure all AppArmor Profiles are in enforce or complain mode
 # AppArmor profiles define what resources applications are able to access.
 - name: 1.7.1.3 Ensure all AppArmor Profiles are in enforce or complain mode,
@@ -899,6 +945,8 @@
     - 1.7.1.3
     - 1.7.1.4
     - scored
+  when: debian10cis_rules_1_7_1_3 or 
+        debian10cis_rules_1_7_1_4
 # 1.8 Warning Banners
 # Presenting a warning message prior to the normal user login may assist in the prosecution
 # of trespassers on the computer system. Changing some of these login banners also has the
@@ -930,6 +978,8 @@
     - 1.8.1.1
     - 1.8.1.4
     - scored
+  when: debian10cis_rules_1_8_1_1 or
+        debian10cis_rules_1_8_1_4
 # 1.8.1.2 Ensure local login warning banner is configured properly
 - name: 1.8.1.2 Ensure local login warning banner is configured properly,
     1.8.1.5 Ensure permissions on /etc/issue are configured
@@ -946,6 +996,8 @@
     - 1.8.1.2
     - 1.8.1.5
     - scored
+  when: debian10cis_rules_1_8_1_2 or
+        debian10cis_rules_1_8_1_5
 # 1.8.1.3 Ensure remote login warning banner is configured properly
 - name: 1.8.1.3 Ensure remote login warning banner is configured properly,
     1.8.1.6 Ensure permissions on /etc/issue.net are configured
@@ -962,6 +1014,9 @@
     - 1.8.1.3
     - 1.8.1.6
     - scored
+  when: debian10cis_rules_1_8_1_3 or
+        debian10cis_rules_1_8_1_6
+
 # 1.8.2 Ensure GDM login banner is configured
 - name: 1.8.2 Ensure GDM login banner is configured
   debug:
@@ -995,3 +1050,4 @@
     - "1.9"
     - manual_setup
     - not-scored
+  when: debian10cis_rules_1_8_2

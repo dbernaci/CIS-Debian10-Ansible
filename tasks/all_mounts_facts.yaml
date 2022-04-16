@@ -7,3 +7,5 @@
   changed_when: false
   check_mode: false
   register: all_mounts
+  tags: 
+    - always
