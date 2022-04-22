@@ -219,6 +219,9 @@ debian10cis_rules_5_1_1: true
 debian10cis_rules_5_1_2: true
 debian10cis_rules_5_1_3: true
 debian10cis_rules_5_1_4: true
+debian10cis_rules_5_1_4_1: true
+debian10cis_rules_5_1_4_2: true
+debian10cis_rules_5_1_4_3: true
 debian10cis_rules_5_1_5: true
 debian10cis_rules_5_1_6: true
 debian10cis_rules_5_1_7: true
