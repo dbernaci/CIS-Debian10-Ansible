@@ -342,6 +342,7 @@
         that: ansible_mounts | byattr('mount', '/home') | list | length > 0
         fail_msg: "/home is NOT a separate partition"
         success_msg: "/home is a separate partition"
+      when: debian10cis_rules_1_1_13
     - name: 1.1.14 Ensure nodev option set on /home partition
       mount:
         path: /home
@@ -350,6 +351,7 @@
         opts: defaults,nodev
         state: present
       with_items: " {{ ansible_mounts | byattr('mount', '/home') | list }}"
+      when: debian10cis_rules_1_1_14
   tags:
     - section1
     - level_2_server
