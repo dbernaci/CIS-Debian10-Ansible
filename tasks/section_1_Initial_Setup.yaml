@@ -251,6 +251,7 @@
     - 1.1.6
     - manual_setup
     - scored
+  when: debian10cis_rules_1_6_1
 # 1.1.7 Ensure separate partition exists for /var/tmp
 # 1.1.8 Ensure nodev option set on /var/tmp partition
 # 1.1.9 Ensure nosuid option set on /var/tmp partition
