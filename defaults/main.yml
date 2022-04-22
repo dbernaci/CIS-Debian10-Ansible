@@ -108,6 +108,7 @@ debian10cis_rules_1_6_4: true
 debian10cis_rules_1_7_1_1: true
 debian10cis_rules_1_7_1_2: true
 debian10cis_rules_1_7_1_3 : true
+debian10cis_rules_1_7_1_4 : true
 debian10cis_rules_1_8_1_1: true
 debian10cis_rules_1_8_1_2: true
 debian10cis_rules_1_8_1_3: true
