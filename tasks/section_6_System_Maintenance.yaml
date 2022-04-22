@@ -1,5 +1,5 @@
 ---
-# 6 System Maintenanc
+# 6 System Maintenance
 # 6.1 System File Permission
 # 6.1.1 Audit system file permissions
 # It is important to confirm that packaged system files and directories are maintained with
@@ -11,14 +11,15 @@
       register: output_6_1_1
     - name: 6.1.1 Audit system file permissions - print output
       debug:
-        msg: "{{ output_6_1_1.stdout_lines }}"
+        msg: "{{ output_6_1_1 }}"
   tags:
     - section6
     - level_2_server
     - level_2_workstation
-    - 6.1.1
     - manual_setup
+    - 6.1.1
     - not-scored
+  when: debian10cis_rules_6_1_1
 # 6.1.2 Ensure permissions on /etc/passwd are configured
 # The /etc/passwd file contains user account information that is used by many system
 # utilities and therefore must be readable for these utilities to operate.
@@ -34,6 +35,7 @@
     - level_1_workstation
     - 6.1.2
     - scored
+  when: debian10cis_rules_6_1_2
 # 6.1.3 Ensure permissions on /etc/gshadow- are configured
 # It is critical to ensure that the /etc/gshadow- file is protected from unauthorized access.
 # Although it is protected by default, the file permissions could be changed either
@@ -50,6 +52,7 @@
     - level_1_workstation
     - 6.1.3
     - scored
+  when: debian10cis_rules_6_1_3
 # 6.1.4 Ensure permissions on /etc/shadow are configured
 # If attackers can gain read access to the /etc/shadow file, they can easily run a password
 # cracking program against the hashed password to break it. Other security information that
@@ -67,6 +70,7 @@
     - level_1_workstation
     - 6.1.4
     - scored
+  when: debian10cis_rules_6_1_4
 # 6.1.5 Ensure permissions on /etc/group are configured
 # The /etc/group file needs to be protected from unauthorized changes by non-privileged
 # users, but needs to be readable as this information is used with many non-privileged
@@ -83,6 +87,7 @@
     - level_1_workstation
     - 6.1.5
     - scored
+  when: debian10cis_rules_6_1_5
 # 6.1.6 Ensure permissions on /etc/passwd- are configured
 # It is critical to ensure that the /etc/passwd- file is protected from unauthorized access.
 # Although it is protected by default, the file permissions could be changed either
@@ -99,6 +104,7 @@
     - level_1_workstation
     - 6.1.6
     - scored
+  when: debian10cis_rules_6_1_6
 # 6.1.7 Ensure permissions on /etc/shadow- are configured
 # It is critical to ensure that the /etc/shadow- file is protected from unauthorized access.
 # Although it is protected by default, the file permissions could be changed either
@@ -115,6 +121,7 @@
     - level_1_workstation
     - 6.1.7
     - scored
+  when: debian10cis_rules_6_1_7
 # 6.1.8 Ensure permissions on /etc/group- are configured
 # It is critical to ensure that the /etc/group- file is protected from unauthorized access.
 # Although it is protected by default, the file permissions could be changed either
@@ -132,6 +139,7 @@
     - level_1_workstation
     - 6.1.8
     - scored
+  when: debian10cis_rules_6_1_8
 # 6.1.9 Ensure permissions on /etc/gshadow are configured
 # If attackers can gain read access to the /etc/gshadow file, they can easily run a password
 # cracking program against the hashed password to break it. Other security information that
@@ -149,6 +157,7 @@
     - level_1_workstation
     - 6.1.9
     - scored
+  when: debian10cis_rules_6_1_9
 # 6.1.10 Ensure no world writable files exist
 # Data in world-writable files can be modified and compromised by any user on the system.
 # World writable files may also indicate an incorrectly written script or program that could
@@ -172,9 +181,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.1.10
     - warn
+    - 6.1.10
     - scored
+  when: debian10cis_rules_6_1_10
 # 6.1.11 Ensure no unowned files or directories exist
 # A new user who is assigned the deleted user's user ID or group ID may then end up
 # "owning" these files, and thus have more access on the system than was intended.
@@ -200,6 +210,7 @@
     - level_1_workstation
     - 6.1.11
     - scored
+  when: debian10cis_rules_6_1_11
 # 6.1.12 Ensure no ungrouped files or directories exist
 # A new user who is assigned the deleted user's user ID or group ID may then end up
 # "owning" these files, and thus have more access on the system than was intended.
@@ -225,6 +236,7 @@
     - level_1_workstation
     - 6.1.12
     - scored
+  when: debian10cis_rules_6_1_12
 # 6.1.13 Audit SUID executables
 # There are valid reasons for SUID programs, but it is important to identify and review such
 # programs to ensure they are legitimate.
@@ -242,9 +254,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.1.13
     - manual_setup
+    - 6.1.13
     - not-scored
+  when: debian10cis_rules_6_1_13
 # 6.1.14 Audit SGID executables
 # There are valid reasons for SGID programs, but it is important to identify and review such
 # programs to ensure they are legitimate. Review the files returned by the action in the audit
@@ -264,9 +277,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.1.14
     - manual_setup
+    - 6.1.14
     - not-scored
+  when: debian10cis_rules_6_1_14
 # 6.2 User and Group Settings
 # 6.2.1 Ensure password fields are not empty
 # All accounts must have passwords or be locked to prevent the account from being used by
@@ -295,6 +309,7 @@
     - level_1_workstation
     - 6.2.1
     - scored
+  when: debian10cis_rules_6_2_1
 # 6.2.2 Ensure no legacy "+" entries exist in /etc/passwd
 # These entries may provide an avenue for attackers to gain privileged access on the system.
 - name: 6.2.2 Ensure no legacy "+" entries exist in /etc/passwd
@@ -312,9 +327,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.2
     - manual_setup
+    - 6.2.2
     - scored
+  when: debian10cis_rules_6_2_2
 # 6.2.3 Ensure all users' home directories exist
 # If the user's home directory does not exist or is unassigned, the user will be placed in "/"
 # and will not be able to write any files or have local environment variables set.
@@ -346,6 +362,7 @@
     - level_1_workstation
     - 6.2.3
     - scored
+  when: debian10cis_rules_6_2_3
 # 6.2.4 Ensure no legacy "+" entries exist in /etc/shadow
 # These entries may provide an avenue for attackers to gain privileged access on the system.
 - name: 6.2.4 Ensure no legacy "+" entries exist in /etc/shadow
@@ -363,9 +380,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.4
     - manual_setup
+    - 6.2.4
     - scored
+  when: debian10cis_rules_6_2_4
 # 6.2.5 Ensure no legacy "+" entries exist in /etc/group
 # These entries may provide an avenue for attackers to gain privileged access on the system.
 - name: 6.2.5 Ensure no legacy "+" entries exist in /etc/group
@@ -383,9 +401,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.5
     - manual_setup
+    - 6.2.5
     - scored
+  when: debian10cis_rules_6_2_5
 # 6.2.6 Ensure root is the only UID 0 account
 # This access must be limited to only the default root account and only from the system
 # console. Administrative access must be through an unprivileged account using an approved
@@ -405,9 +424,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.6
     - manual_setup
+    - 6.2.6
     - scored
+  when: debian10cis_rules_6_2_6
 # 6.2.7 Ensure root PATH Integrity
 # Including the current working directory (.) or other writable directory in root 's executable
 # path makes it likely that an attacker can gain superuser access by forcing an administrator
@@ -426,9 +446,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.7
     - manual_setup
+    - 6.2.7
     - scored
+  when: debian10cis_rules_6_2_7
 # 6.2.8 Ensure users' home directories permissions are 750 or more restrictive
 # Group or world-writable user home directories may enable malicious users to steal
 # or modify other users' data or to gain another user's system privileges.
@@ -458,6 +479,7 @@
     - level_1_workstation
     - 6.2.8
     - scored
+  when: debian10cis_rules_6_2_8
 # 6.2.9 Ensure users own their home directories
 # Since the user is accountable for files stored in the user home directory, the user must be
 # the owner of the directory.
@@ -485,6 +507,7 @@
     - level_1_workstation
     - 6.2.9
     - scored
+  when: debian10cis_rules_6_2_9
 # 6.2.10 Ensure users' dot files are not group or world writable
 # Group or world-writable user configuration files may enable malicious users to steal or
 # modify other users' data or to gain another user's system privileges.
@@ -502,9 +525,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.10
     - manual_setup
+    - 6.2.10
     - scored
+  when: debian10cis_rules_6_2_10
 # 6.2.11 Ensure no users have .forward files
 # Use of the .forward file poses a security risk in that sensitive data may be inadvertently
 # transferred outside the organization. The .forward file also poses a risk as it can be used to
@@ -523,9 +547,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.11
     - manual_setup
+    - 6.2.11
     - scored
+  when: debian10cis_rules_6_2_11
 # 6.2.12 Ensure no users have .netrc files
 # The .netrc file presents a significant security risk since it stores passwords in unencrypted
 # form. Even if FTP is disabled, user accounts may have brought over .netrc files from other
@@ -544,9 +569,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.12
     - manual_setup
+    - 6.2.12
     - scored
+  when: debian10cis_rules_6_2_12
 # 6.2.13 Ensure users' .netrc Files are not group or world accessible
 # .netrcfiles may contain unencrypted passwords that may be used to attack other systems.
 - name: 6.2.13 Ensure users' .netrc Files are not group or world accessible
@@ -563,9 +589,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.13
     - manual_setup
+    - 6.2.13
     - scored
+  when: debian10cis_rules_6_2_13
 # 6.2.14 Ensure no users have .rhosts files
 # This action is only meaningful if .rhosts support is permitted in the file /etc/pam.conf.
 # Even though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, they
@@ -585,9 +612,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.14
     - manual_setup
+    - 6.2.14
     - scored
+  when: debian10cis_rules_6_2_14
 # 6.2.15 Ensure all groups in /etc/passwd exist in /etc/group
 # Groups defined in the /etc/passwd file but not in the /etc/group file pose a threat to
 # system security since group permissions are not properly managed.
@@ -611,9 +639,11 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.15
     - manual_setup
+    - 6.2.15
     - scored
+  when: debian10cis_rules_6_2_15
+
 # 6.2.16 Ensure no duplicate UIDs exist
 # Users must be assigned unique UIDs for accountability and to ensure appropriate access
 # protections.
@@ -639,9 +669,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.16
     - manual_setup
+    - 6.2.16
     - scored
+  when: debian10cis_rules_6_2_16
 # 6.2.17 Ensure no duplicate GIDs exist
 # User groups must be assigned unique GIDs for accountability and to ensure appropriate
 # access protections.
@@ -662,9 +693,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.17
     - manual_setup
+    - 6.2.17
     - scored
+  when: debian10cis_rules_6_2_17
 # 6.2.18 Ensure no duplicate user names exist
 # If a user is assigned a duplicate user name, it will create and have access to files with the
 # first UID for that username in /etc/passwd . For example, if "test4" has a UID of 1000 and a
@@ -687,9 +719,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.18
     - manual_setup
+    - 6.2.18
     - scored
+  when: debian10cis_rules_6_2_18
 # 6.2.19 Ensure no duplicate group names exist
 # If a group is assigned a duplicate group name, it will create and have access to files with the
 # first GID for that group in /etc/group . Effectively, the GID is shared, which is a security
@@ -711,9 +744,10 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.19
     - manual_setup
+    - 6.2.19
     - scored
+  when: debian10cis_rules_6_2_19
 # 6.2.20 Ensure shadow group is empty
 # Any users assigned to the shadow group would be granted read access to the /etc/shadow
 # file. If attackers can gain read access to the /etc/shadow file, they can easily run a password
@@ -736,6 +770,7 @@
     - section6
     - level_1_server
     - level_1_workstation
-    - 6.2.20
     - manual_setup
+    - 6.2.20
     - scored
+  when: debian10cis_rules_6_2_20
