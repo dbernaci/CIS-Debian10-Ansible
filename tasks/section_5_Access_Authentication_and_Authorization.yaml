@@ -429,7 +429,7 @@
     - level_1_workstation
     - 5.2.14
     - scored
-  when: debian10cis_rules_5_2_13
+  when: debian10cis_rules_5_2_14
 # 5.2.15 Ensure only strong Key Exchange algorithms are used
 # Key exchange methods that are considered weak should be removed. A key exchange
 # method may be weak because too few bits are used, or the hashing algorithm is considered

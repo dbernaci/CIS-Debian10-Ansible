@@ -236,6 +236,7 @@ debian10cis_rules_5_2_10: true
 debian10cis_rules_5_2_11: true
 debian10cis_rules_5_2_12: true
 debian10cis_rules_5_2_13: true
+debian10cis_rules_5_2_14: true
 debian10cis_rules_5_2_15: true
 debian10cis_rules_5_2_16: true
 debian10cis_rules_5_2_17: true
