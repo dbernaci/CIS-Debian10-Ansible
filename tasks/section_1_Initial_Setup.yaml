@@ -493,7 +493,10 @@
       changed_when: output_1_1_21.stdout_lines | length > 0
       check_mode: no
     - name: 1.1.21 Ensure sticky bit is set on all world-writable directories - fix
-      script: 1_1_21.sh
+      file:
+        path: "{{ item }}"
+        mode: 'a+t'
+      loop: "{{ output_1_1_21.stdout_lines }}"
       when: output_1_1_21.stdout_lines | length > 0
   tags:
     - section1
