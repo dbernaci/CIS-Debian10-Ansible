@@ -352,6 +352,7 @@
     - 1.1.6
     - manual_setup
     - scored
+  when: debian10cis_rules_1_6_1
 # 1.1.7 Ensure separate partition exists for /var/tmp
 # The /var/tmp directory is a world-writable directory used for temporary storage by all
 # users and some applications.
@@ -540,6 +541,7 @@
         that: ansible_mounts | byattr('mount', '/home') | list | length > 0
         fail_msg: "/home is NOT a separate partition"
         success_msg: "/home is a separate partition"
+      when: debian10cis_rules_1_1_13
     - name: 1.1.14 Ensure nodev option set on /home partition
       mount:
         path: /home
@@ -548,6 +550,7 @@
         opts: defaults,nodev
         state: present
       with_items: " {{ ansible_mounts | byattr('mount', '/home') | list }}"
+      when: debian10cis_rules_1_1_14
   tags:
     - section1
     - level_2_server

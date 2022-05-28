@@ -81,6 +81,7 @@ debian10cis_rules_1_1_10: true
 debian10cis_rules_1_1_11: true
 debian10cis_rules_1_1_12: true
 debian10cis_rules_1_1_13: true
+debian10cis_rules_1_1_14: true
 debian10cis_rules_1_1_15: true
 debian10cis_rules_1_1_16: true
 debian10cis_rules_1_1_17: true
@@ -107,6 +108,7 @@ debian10cis_rules_1_6_4: true
 debian10cis_rules_1_7_1_1: true
 debian10cis_rules_1_7_1_2: true
 debian10cis_rules_1_7_1_3 : true
+debian10cis_rules_1_7_1_4 : true
 debian10cis_rules_1_8_1_1: true
 debian10cis_rules_1_8_1_2: true
 debian10cis_rules_1_8_1_3: true
@@ -219,6 +221,9 @@ debian10cis_rules_5_1_1: true
 debian10cis_rules_5_1_2: true
 debian10cis_rules_5_1_3: true
 debian10cis_rules_5_1_4: true
+debian10cis_rules_5_1_4_1: true
+debian10cis_rules_5_1_4_2: true
+debian10cis_rules_5_1_4_3: true
 debian10cis_rules_5_1_5: true
 debian10cis_rules_5_1_6: true
 debian10cis_rules_5_1_7: true
@@ -236,6 +241,7 @@ debian10cis_rules_5_2_10: true
 debian10cis_rules_5_2_11: true
 debian10cis_rules_5_2_12: true
 debian10cis_rules_5_2_13: true
+debian10cis_rules_5_2_14: true
 debian10cis_rules_5_2_15: true
 debian10cis_rules_5_2_16: true
 debian10cis_rules_5_2_17: true
