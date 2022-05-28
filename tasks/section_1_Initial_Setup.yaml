@@ -692,10 +692,13 @@
       shell: |
         df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null
       register: output_1_1_21
-      changed_when: output_1_1_21.stdout_lines | length > 0
+      changed_when: false  # read-only task
       check_mode: no
     - name: 1.1.21 Ensure sticky bit is set on all world-writable directories - fix
-      script: 1_1_21.sh
+      file:
+        path: "{{ item }}"
+        mode: 'a+t'
+      loop: "{{ output_1_1_21.stdout_lines }}"
       when: output_1_1_21.stdout_lines | length > 0
   tags:
     - section1
