@@ -251,6 +251,7 @@
     - tmp
     - mount
     - scored
+  when: debian10cis_rules_1_1_3
 # 1.1.4 Ensure nosuid option set on /tmp partition
 - name: 1.1.4 Ensure nosuid option set on /tmp partition
   block:
@@ -291,6 +292,7 @@
     - tmp
     - mount
     - scored
+  when: debian10cis_rules_1_1_4
 # 1.1.5 Ensure noexec option set on /tmp partition
 - name: 1.1.5 Ensure noexec option set on /tmp partition
   block:
@@ -331,9 +333,7 @@
     - tmp
     - mount
     - scored
-  when: debian10cis_rules_1_1_3 or 
-        debian10cis_rules_1_1_4 or 
-        debian10cis_rules_1_1_5
+  when: debian10cis_rules_1_1_5
 # 1.1.6 Ensure separate partition exists for /var
 # The /var directory is used by daemons and other system services to temporarily store
 # dynamic data. Some directories created by these processes may be world-writable.
