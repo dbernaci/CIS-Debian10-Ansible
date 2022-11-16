@@ -272,11 +272,19 @@
 # Note: Several httpd servers exist and can use other service names. apache2 and nginx are
 # example services that provide an HTTP server. These and other services should also be audited
 - name: 2.2.10 Ensure HTTP server is not enabled
-  service:
-    name: apache2
-    state: stopped
-    enabled : no
-  ignore_errors: true
+  block:
+  - name: 2.2.10 Ensure HTTP server is not enabled - apache
+    service:
+      name: apache2
+      state: stopped
+      enabled : no
+    ignore_errors: true
+  - name: 2.2.10 Ensure HTTP server is not enabled - nginx
+    service:
+      name: nginx
+      state: stopped
+      enabled : no
+    ignore_errors: true
   tags:
     - section2
     - level_1_server
