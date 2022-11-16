@@ -210,6 +210,7 @@
     - tmp
     - mount
     - scored
+  when: debian10cis_rules_1_1_2
 # 1.1.3 Ensure nodev option set on /tmp partition
 - name: 1.1.3 Ensure nodev option set on /tmp partition
   block:
@@ -330,8 +331,7 @@
     - tmp
     - mount
     - scored
-  when: debian10cis_rules_1_1_2 or 
-        debian10cis_rules_1_1_3 or 
+  when: debian10cis_rules_1_1_3 or 
         debian10cis_rules_1_1_4 or 
         debian10cis_rules_1_1_5
 # 1.1.6 Ensure separate partition exists for /var
