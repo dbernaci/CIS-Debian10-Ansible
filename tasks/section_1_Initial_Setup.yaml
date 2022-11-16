@@ -352,7 +352,7 @@
     - 1.1.6
     - manual_setup
     - scored
-  when: debian10cis_rules_1_6_1
+  when: debian10cis_rules_1_1_6
 # 1.1.7 Ensure separate partition exists for /var/tmp
 # The /var/tmp directory is a world-writable directory used for temporary storage by all
 # users and some applications.
