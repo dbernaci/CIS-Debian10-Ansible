@@ -614,6 +614,7 @@
     - level_1_workstation
     - 1.1.16
     - scored
+  when: debian10cis_rules_1_1_16
 # 1.1.17 Ensure noexec option set on /dev/shm partition
 # The noexec mount option specifies that the filesystem cannot contain executable binaries.
 # Setting this option on a file system prevents users from executing programs from shared
@@ -640,6 +641,7 @@
     - level_1_workstation
     - 1.1.17
     - scored
+  when: debian10cis_rules_1_1_17
 # 1.1.18 Ensure nodev option set on removable media partitions
 # Removable media containing character and block special devices could be used to
 # circumvent security controls by allowing non-root users to access sensitive device files
