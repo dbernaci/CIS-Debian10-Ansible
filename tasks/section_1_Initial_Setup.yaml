@@ -369,6 +369,7 @@
     - tmp
     - mount
     - scored
+  when: debian10cis_rules_1_1_7
 # 1.1.8 Ensure nodev option set on /var/tmp partition
 - name: 1.1.8 Ensure nodev option set on /var/tmp partition
   block:
@@ -409,6 +410,7 @@
     - tmp
     - mount
     - scored
+  when: debian10cis_rules_1_1_8
 # 1.1.9 Ensure nosuid option set on /var/tmp partition
 - name: 1.1.9 Ensure nosuid option set on /var/tmp partition
   block:
