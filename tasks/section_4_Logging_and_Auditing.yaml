@@ -503,8 +503,8 @@
     - level_1_workstation
     - 4.2.1.5
     - scored
-  when: remoteSyslog.enable == True and 
-        debian10cis_rules_4_2_1_5
+  when: debian10cis_rules_4_2_1_5 and 
+        remoteSyslog.enable == True
 # 4.2.1.6 Ensure remote rsyslog messages are only accepted on designated log hosts
 # The guidance in the section ensures that remote log hosts are configured to only accept
 # rsyslog data from hosts within the specified domain and that those systems that are not
