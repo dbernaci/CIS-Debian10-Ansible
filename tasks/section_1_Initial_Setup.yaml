@@ -1186,7 +1186,7 @@
 - name: 1.8.1.2 Ensure local login warning banner is configured properly,
     1.8.1.5 Ensure permissions on /etc/issue are configured
   template:
-    src: issue.j2
+    src: issue.net.j2
     dest: /etc/issue
     owner: root
     group: root
