@@ -778,7 +778,7 @@
     - level_1_workstation
     - 5.4.1.4
     - scored
-  when: debian10cis_rules_5_4_1
+  when: debian10cis_rules_5_4_1_4
 # 5.4.1.5 Ensure all users last password change date is in the past
 # If a users recorded password change date is in the future then they could bypass any set
 # password expiration.
