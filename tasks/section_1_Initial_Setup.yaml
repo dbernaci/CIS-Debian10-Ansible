@@ -1099,7 +1099,7 @@
 # AppArmor provides Mandatory Access Controls.
 - name: 1.7.1.1 Ensure AppArmor is installed
   apt:
-    name: ["apparmor"]
+    name: ["apparmor", "apparmor-utils]
     state: present
   tags:
     - section1
