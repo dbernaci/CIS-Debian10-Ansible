@@ -509,7 +509,7 @@
     - 1.1.11
     - manual_setup
     - scored
-  when: debian10cis_rules_1_1_11 
+  when: debian10cis_rules_1_1_11
 # 1.1.12 Ensure separate partition exists for /var/log/audit
 # There are two important reasons to ensure that data gathered by auditd is stored on a
 # separate partition: protection against resource exhaustion (since the audit.log file can
@@ -528,7 +528,7 @@
     - 1.1.12
     - manual_setup
     - scored
-  when: debian10cis_rules_1_1_12 
+  when: debian10cis_rules_1_1_12
 # 1.1.13 Ensure separate partition exists for /home
 # If the system is intended to support local users, create a separate partition for the /home
 # directory to protect against resource exhaustion and restrict the type of files that can be
@@ -559,7 +559,7 @@
     - 1.1.14
     - manual_setup
     - scored
-  when: debian10cis_rules_1_1_13 or 
+  when: debian10cis_rules_1_1_13 or
         debian10cis_rules_1_1_14
 # 1.1.15 Ensure nodev option set on /dev/shm partition
 # The nodev mount option specifies that the filesystem cannot contain special devices.
@@ -670,7 +670,7 @@
     - 1.1.19
     - manual_setup
     - not-scored
-  when: debian10cis_rules_1_1_19 
+  when: debian10cis_rules_1_1_19
 # 1.1.20 Ensure noexec option set on removable media partitions
 # Setting this option on a file system prevents users from executing programs from the
 # removable media. This deters users from being able to introduce potentially malicious
@@ -685,7 +685,7 @@
     - 1.1.20
     - manual_setup
     - not-scored
-  when: debian10cis_rules_1_1_20 
+  when: debian10cis_rules_1_1_20
 # 1.1.21 Ensure sticky bit is set on all world-writable directories
 # This feature prevents the ability to delete or rename files in world writable directories
 # (such as /tmp ) that are owned by another user.
@@ -1099,7 +1099,7 @@
 # AppArmor provides Mandatory Access Controls.
 - name: 1.7.1.1 Ensure AppArmor is installed
   apt:
-    name: ["apparmor", "apparmor-utils]
+    name: ["apparmor", "apparmor-utils"]
     state: present
   tags:
     - section1
@@ -1150,7 +1150,7 @@
     - 1.7.1.3
     - 1.7.1.4
     - scored
-  when: debian10cis_rules_1_7_1_3 or 
+  when: debian10cis_rules_1_7_1_3 or
         debian10cis_rules_1_7_1_4
 # 1.8 Warning Banners
 # Presenting a warning message prior to the normal user login may assist in the prosecution
@@ -1256,4 +1256,4 @@
     - manual_setup
     - not-scored
   when: debian10cis_rules_1_8_2
-  
+
