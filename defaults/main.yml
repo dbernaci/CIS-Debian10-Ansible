@@ -7,14 +7,14 @@ IPv6_is_enabled: no
 enable_firewall: yes
 firewall_type: nftables # Valid values are: ufw, nftables, iptables
 # ufw example
-#list_of_rules_to_allow:  
+#list_of_rules_to_allow:
 #  - { desc: "ssh", rule: "allow", port: "22", proto: "tcp" }
 # nftables example
 list_of_rules_to_allow:
   - { desc: "ssh", rule: "tcp dport ssh accept" }
   - { desc: "ping", rule: "ip protocol icmp accept" }
 # iptables example
-#list_of_rules_to_allow:  
+#list_of_rules_to_allow:
 #  - { desc: "ssh", port: "22", proto: "tcp" }
 
 # Section 4 Settings
@@ -48,7 +48,7 @@ pass_expire_in_days: 310
 pass_warn_age: 7
 pass_min_days: 1
 # 5.4.1.1 Ensure password expiration is 365 days or less
-list_of_os_users: [] # IMPORTANT : List of user to complete. We cannot guess it. 
+list_of_os_users: [] # IMPORTANT : List of user to complete. We cannot guess it.
 # 5.4.1.4 Ensure inactive password lock is 30 days or less
 #Note: A value of -1 would disable this setting
 account_inactive: 30
@@ -73,6 +73,7 @@ debian10cis_rules_1_1_2: true
 debian10cis_rules_1_1_3: true
 debian10cis_rules_1_1_4: true
 debian10cis_rules_1_1_5: true
+debian10cis_rules_1_1_6: true
 debian10cis_rules_1_1_7: true
 debian10cis_rules_1_1_8: true
 debian10cis_rules_1_1_9: true
@@ -263,6 +264,7 @@ debian10cis_rules_5_4_2: true
 debian10cis_rules_5_4_3: true
 debian10cis_rules_5_4_4: true
 debian10cis_rules_5_4_5: true
+debian10cis_rules_5_5: true
 debian10cis_rules_5_6: true
 #6
 debian10cis_rules_6_1_1: true
