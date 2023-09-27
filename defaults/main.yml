@@ -22,8 +22,8 @@ grub_backlog_limit: 8192
 max_log_file: 10
 #max_log_file_action: keep_logs
 max_log_file_action: rotate
-#admin_space_left_action: halt
-admin_space_left_action: email
+admin_space_left_action: halt
+#admin_space_left_action: email
 space_left_action: email
 action_mail_acct: root
 backlog_limit: "8192"
@@ -48,8 +48,7 @@ pass_expire_in_days: 310
 pass_warn_age: 7
 pass_min_days: 1
 # 5.4.1.1 Ensure password expiration is 365 days or less
-list_of_os_users:
-  - pippo
+list_of_os_users: [] # IMPORTANT : List of user to complete. We cannot guess it. 
 # 5.4.1.4 Ensure inactive password lock is 30 days or less
 #Note: A value of -1 would disable this setting
 account_inactive: 30
@@ -108,7 +107,6 @@ debian10cis_rules_1_6_4: true
 debian10cis_rules_1_7_1_1: true
 debian10cis_rules_1_7_1_2: true
 debian10cis_rules_1_7_1_3 : true
-debian10cis_rules_1_7_1_4 : true
 debian10cis_rules_1_8_1_1: true
 debian10cis_rules_1_8_1_2: true
 debian10cis_rules_1_8_1_3: true
@@ -256,6 +254,10 @@ debian10cis_rules_5_3_2: true
 debian10cis_rules_5_3_3: true
 debian10cis_rules_5_3_4: true
 debian10cis_rules_5_4_1: true
+debian10cis_rules_5_4_1_1: true
+debian10cis_rules_5_4_1_2: true
+debian10cis_rules_5_4_1_3: true
+debian10cis_rules_5_4_1_4: true
 debian10cis_rules_5_4_1_5: true
 debian10cis_rules_5_4_2: true
 debian10cis_rules_5_4_3: true

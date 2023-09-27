@@ -132,7 +132,7 @@
     dest: /etc/group-
     owner: root
     group: root
-    mode: 0644
+    mode: 0600
   tags:
     - section6
     - level_1_server
