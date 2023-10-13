@@ -666,16 +666,22 @@
       lineinfile:
         dest: /etc/pam.d/common-auth
         line: "auth required pam_tally2.so onerr=fail audit silent deny=5 unlock_time=900"
+        create: true
+        
     - name: 5.3.2 Ensure lockout for failed password attempts is configured - pam_deny.so
       lineinfile:
         dest: /etc/pam.d/common-account
         regexp: '^account\srequisite'
         line: "account requisite pam_deny.so"
+        create: true
+        
     - name: 5.3.2 Ensure lockout for failed password attempts is configured - pam_tally2.so
       lineinfile:
         dest: /etc/pam.d/common-account
         regexp: '^account\srequired'
         line: "account required pam_tally2.so"
+        create: true
+        
   tags:
     - section5
     - level_1_server
