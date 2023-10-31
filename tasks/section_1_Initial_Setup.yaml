@@ -847,6 +847,7 @@
     regexp: "^Defaults logfile.*"
     line: 'Defaults logfile="/var/log/sudo.log"'
     validate: "visudo -cf %s"
+    mode: "0660"
   tags:
     - section1
     - level_1_server
